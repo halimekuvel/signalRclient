@@ -182,6 +182,8 @@
                     $("#clients").html(userNamesTxt);                    
 
                 });
+
+                let connectionId_ = "";
                 // send the client's message to the SendMessageAsync method in the server
                 $("#btnSend").click(() => {
                     let message = $("#txtMessage").val();
@@ -198,8 +200,11 @@
                 });
 
                 // take the message that have been send from the server with the RPC system
-                connection.on("receiveMessage", message => {
-                    $("#showMessages").append("<span class=\"border p-1\">" + message + "</span><br><br>");
+                connection.on("receiveMessage", (message, connectionId, userName) => {
+                    if(connectionId == connectionId_) {
+                        
+                    }
+                    $("#showMessages").append(" <span class=\"border p-1\">" + "<strong>" + userName + "</strong>: " + message + "</span><br><br>");
                 });
                 
 
@@ -213,12 +218,11 @@
                 });
 
                 // receive message for the selectGoups
-                connection.on("receiveGroupMessage", message => {
-                    $("#showGroupMessages").append("<span class=\"border p-1\">" + message + "</span><br><br>");
+                connection.on("receiveGroupMessage", (message, connectionId, userName) => {
+                    $("#showGroupMessages").append("<span class=\"border p-1\">" + "<strong>" + userName + "</strong>: " + message + "</span><br><br>");
                 });
 
                 // write the connectionId of the client
-                let connectionId_ = "";
                 connection.on("getConnectionId", connectionId => {
                     connectionId_ = connectionId;
                     $("#connectionId").html(`Your Connection ID: ${connectionId}`);
@@ -282,13 +286,16 @@
                                 })
                             ).append(groupName + " <br>")
                         );
-                    }else{
+                    }
+                    else{         
+                        $("#noMoreGroupWarning").html("No more groups can be added!");
+                        $("#noMoreGroupWarning").fadeIn(2000, () => {
                         setTimeout(() => {
-                            alert("group name is already added!");
-                        }, 200);
+                            $("#noMoreGroupWarning").fadeOut(2000);
+                        }, 2000)
+                    });
                     }
                 });
-
 
                 // when the chosen group has changed
                 $(".chosenGroup").click(() => {
