@@ -201,10 +201,14 @@
 
                 // take the message that have been send from the server with the RPC system
                 connection.on("receiveMessage", (message, connectionId, userName) => {
-                    if(connectionId == connectionId_) {
-                        
+                    let nameAndMsg = "";
+                    if(connectionId === connectionId_) {
+                        nameAndMsg = "<span class=\"badge badge-light float-right\">" + "<strong>" + userName + " : </strong>" + message + "</span><br><br>";
                     }
-                    $("#showMessages").append(" <span class=\"border p-1\">" + "<strong>" + userName + "</strong>: " + message + "</span><br><br>");
+                    else {
+                        nameAndMsg = "<span class=\"badge badge-warning float-left\">" + "<strong>" + userName + " : </strong>" + message + "</span><br><br>";
+                    }
+                    $("#showMessages").append(nameAndMsg);
                 });
                 
 
@@ -219,7 +223,14 @@
 
                 // receive message for the selectGoups
                 connection.on("receiveGroupMessage", (message, connectionId, userName) => {
-                    $("#showGroupMessages").append("<span class=\"border p-1\">" + "<strong>" + userName + "</strong>: " + message + "</span><br><br>");
+                    let nameAndMsg = "";
+                    if(connectionId === connectionId_) {
+                        nameAndMsg = "<span class=\"badge badge-light float-right\">" + "<strong>" + userName + " : </strong>" + message + "</span><br><br>";
+                    }
+                    else {
+                        nameAndMsg = "<span class=\"badge badge-warning float-left\">" + "<strong>" + userName + " : </strong>" + message + "</span><br><br>";
+                    }
+                    $("#showGroupMessages").append(nameAndMsg);
                 });
 
                 // write the connectionId of the client
