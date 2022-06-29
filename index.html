@@ -49,19 +49,21 @@
                     </div>  
                 </div>
                 <div class="col-md-4 border">
+
                     <br>
                     <h3>Group Chat</h3>
                     <br>
                     Add a new group:
                     <br>
-                    <input type="text" id="groupName" class="form-control" placeholder="Enter Group Name">
+                    <input type="text" id="groupName" class="form-control" placeholder="Enter Group Name" required>
                     <button id="btnAddGroup" class="btn btn-primary mt-1" disabled>Add Group</button>
                     <br>
                     <div id="noMoreGroupWarning"></div>
                     <br>
+                    
                     Select a group to join:
                     <br><br>
-                    <div class="btn-group btn-group-toggle chosenGroup" data-toggle="buttons" id="selectGroup">
+                    <div class="btn-group btn-group-toggle chosenGroup table" style="max-width: 100%; display: block;" data-toggle="buttons" id="selectGroup">
                         <!-- <label class="btn btn-secondary">
                           <input type="radio" name="group" id="option1" autocomplete="off" value="A"> A
                         </label>
@@ -231,8 +233,16 @@
                 });
 
                 $("#btnAddGroup").click(() => {
+                    if($("#groupName").val()==""){
+                        $("#groupName").addClass("is-invalid");
+                        setTimeout(() => {
+                            alert("group name is required!");
+                        }, 200);
+                    }
+                    else{
                     let groupName = $("#groupName").val();
                     connection.invoke("addGroup", connectionId_, groupName).catch(error => console.log(`Error occured while adding a group. ${error}`));
+                    }
 
                 });
 
@@ -257,11 +267,12 @@
 
                 // add a new group to radio button if it doesn't already exist
                 connection.on("checkAddGroupOk", (isAdded, groupName) => {
+                    
                     if(isAdded == true) {
-                        console.log("here");
                         $("#selectGroup").append(
                             $("<label>").prop({
-                                class:"btn btn-secondary"
+                                class:"btn btn-secondary ml-1 mb-1",
+                                style:"overflow: hidden;text-overflow: ellipsis;max-width: 100%;"
                             }).append(
                                 $("<input>").prop({
                                     type: "radio",
@@ -271,8 +282,10 @@
                                 })
                             ).append(groupName + " <br>")
                         );
-                    }
-                    else{
+                    }else{
+                        setTimeout(() => {
+                            alert("group name is already added!");
+                        }, 200);
                     }
                 });
 
@@ -282,7 +295,9 @@
                     $("#showGroupMessages").empty();
                     $("#groupMsgAccess").css("display", "none");
                 });
-
+                $("#groupName").click(() => {
+                    $("#groupName").removeClass("is-invalid");
+                });
                 // add username
                 $("#confirmUserName").click(() => {
                     let userName = $("#userName").val();
