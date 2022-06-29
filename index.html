@@ -74,10 +74,8 @@
                           <input type="radio" name="group" id="option3" autocomplete="off" value="C"> C
                         </label> -->
                     </div>
-                    <br> 
                     <button id="btnJoinGroup" class="btn btn-primary mt-2" disabled>Join Group</button>
-                    <br><br>                    
-                    
+                    <br><br>                                      
                     <div id="groupMsgAccess" style="display:none;">        
                         <div id="currentGroupInfo"></div>
                         <br>  
@@ -89,7 +87,6 @@
                             <div id="showGroupMessages"></div>
                         </div>
                     </div> 
-                    <!-- <textarea id="connectionIds" placeholder="Connection Ids"></textarea> -->
                 </div>
                 
             </div>
@@ -183,6 +180,10 @@
 
                 });
 
+
+                let groupCount = 0;
+
+
                 let connectionId_ = "";
                 // send the client's message to the SendMessageAsync method in the server
                 $("#btnSend").click(() => {
@@ -239,12 +240,32 @@
                     $("#connectionId").html(`Your Connection ID: ${connectionId}`);
                 });
 
+                let currentGroupName = "";
                 $("#btnJoinGroup").click(() => {
-                    let groupName = $("input[name=group]:checked").val();
-                    $("#currentGroupInfo").html("You are in Group " + groupName + " Chat!");
-                    connection.invoke("addGroup", connectionId_, groupName).catch(error => console.log(`Error occured while joining a group. ${error}`));
+                    currentGroupName = $("input[name=group]:checked").val();
+                    connection.invoke("JoinGroup", connectionId_, currentGroupName).catch(error => console.log(`Error occured while joining a group. ${error}`));
                     // remove style display:none
                     $("#groupMsgAccess").removeAttr("style");
+                });
+
+                connection.on("checkJoinGroup", alreadyInGroup => {
+                    // user joined
+                    if(!alreadyInGroup) {
+                        $("#currentGroupInfo").html("You joined Group " + currentGroupName + " Chat!");
+                        $("#currentGroupInfo").fadeIn(2000, () => {
+                            setTimeout(() => {
+                                $("#currentGroupInfo").fadeOut(2000);
+                            }, 2000)
+                        });
+                    }
+                    else { // user already in group
+                        $("#currentGroupInfo").html("You have already joined Group " + currentGroupName + " Chat!");
+                        $("#currentGroupInfo").fadeIn(2000, () => {
+                            setTimeout(() => {
+                                $("#currentGroupInfo").fadeOut(2000);
+                            }, 2000)
+                        });
+                    }
                 });
 
                 $("#btnAddGroup").click(() => {
@@ -256,7 +277,7 @@
                     }
                     else{
                     let groupName = $("#groupName").val();
-                    connection.invoke("addGroup", connectionId_, groupName).catch(error => console.log(`Error occured while adding a group. ${error}`));
+                    connection.invoke("AddGroup", connectionId_, groupName).catch(error => console.log(`Error occured while adding a group. ${error}`));
                     }
 
                 });
@@ -281,9 +302,8 @@
                 }); 
 
                 // add a new group to radio button if it doesn't already exist
-                connection.on("checkAddGroupOk", (isAdded, groupName) => {
-                    
-                    if(isAdded == true) {
+                connection.on("checkAddGroup", (groupAlreadyExists, groupName, connectionId) => {
+                    if(groupAlreadyExists == false) {
                         $("#selectGroup").append(
                             $("<label>").prop({
                                 class:"btn btn-secondary ml-1 mb-1",
@@ -297,14 +317,18 @@
                                 })
                             ).append(groupName + " <br>")
                         );
+                        groupCount++;
                     }
-                    else{         
-                        $("#noMoreGroupWarning").html("No more groups can be added!");
+                    else if(connectionId === connectionId_){         
+                        $("#noMoreGroupWarning").html("This group name is taken!");
                         $("#noMoreGroupWarning").fadeIn(2000, () => {
-                        setTimeout(() => {
-                            $("#noMoreGroupWarning").fadeOut(2000);
-                        }, 2000)
-                    });
+                            setTimeout(() => {
+                                $("#noMoreGroupWarning").fadeOut(2000);
+                            }, 2000)
+                        });
+                    }
+                    if(groupCount >= 6) {
+                        $("#btnAddGroup").prop("disabled", true);
                     }
                 });
 
@@ -312,10 +336,14 @@
                 $(".chosenGroup").click(() => {
                     $("#showGroupMessages").empty();
                     $("#groupMsgAccess").css("display", "none");
+                    // remove the user from the group
+                    connection.invoke("RemoveGroup", connectionId_, currentGroupName).catch(error => console.log(`Error occured while removing a user from a group. ${error}`));
                 });
+
                 $("#groupName").click(() => {
                     $("#groupName").removeClass("is-invalid");
                 });
+
                 // add username
                 $("#confirmUserName").click(() => {
                     let userName = $("#userName").val();
