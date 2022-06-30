@@ -11,3 +11,8 @@
 }
 
 .bolded { font-weight: bold; }
+
+.badge{
+  white-space: wrap !important; 
+
+}
