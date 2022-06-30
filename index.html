@@ -1,70 +1,80 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <link rel="stylesheet" href="style.css">
-        <script src="signalr.min.js"></script>
-        <script src="jquery.min.js"></script>
 
-        <title>Let's chat!</title>
-    </head>
-    <body>
+<head>
 
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-        <div class="alert alert-info" role="alert" id="status" style="display: none;"></div>
+    <script src="signalr.min.js"></script>
+    <script src="jquery.min.js"></script>
 
-        <div style="background-color: black; color: white;" id="connectionId"></div>
-        <br>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 border">
-                    <br>
-                    <h3>Username:</h3>
-                    <input type="text" id="userName" class="form-control" placeholder="Your Username">
-                    <br>
-                    <button id="confirmUserName" class="btn btn-primary mt-1">Confirm</button>
-                    <br><br><br>
-                    <div id="helloUser"></div>
-                    <br><br>
-                    <h5>Online Users</h5>
-                    <br>
-                    <div id="clients" class="ml-1 pb-4"></div>
+    <title>Let's chat!</title>
+</head>
+
+<body>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <div class="alert alert-info" role="alert" id="status" style="display: none;"></div>
+
+    <div style="background-color: black; color: white;" id="connectionId"></div>
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 border">
+                <br>
+                <h3>Username:</h3>
+                <input type="text" id="userName" class="form-control" placeholder="Your Username">
+                <br>
+                <button id="confirmUserName" class="btn btn-primary mt-1">Confirm</button>
+                <br><br><br>
+                <div id="helloUser"></div>
+                <br><br>
+                <h5>Online Users</h5>
+                <br>
+                <div id="clients" class="ml-1 pb-4"></div>
+            </div>
+            <div class="col-md-4 border">
+                <br>
+                <h3>Chat with Everyone!</h3>
+                <br>
+                <input type="text" id="txtMessage" class="form-control" placeholder="Message">
+                <br>
+                <button id="btnSend" class="btn btn-primary mt-1" disabled>Send</button>
+                <br><br>
+                <div class="container overflow-auto">
+                    <div id="showMessages"></div>
                 </div>
-                <div class="col-md-4 border">
-                    <br>
-                    <h3>Chat with Everyone!</h3>
-                    <br>                    
-                    <input type="text" id="txtMessage" class="form-control" placeholder="Message">
-                    <br>
-                    <button id="btnSend" class="btn btn-primary mt-1" disabled>Send</button>
-                    <br><br>
-                    <div class="container overflow-auto">
-                        <div id="showMessages"></div>
-                    </div>  
-                </div>
-                <div class="col-md-4 border">
+            </div>
+            <div class="col-md-4 border">
 
-                    <br>
-                    <h3>Group Chat</h3>
-                    <br>
-                    Add a new group:
-                    <br>
-                    <input type="text" id="groupName" class="form-control" placeholder="Enter Group Name" required>
-                    <button id="btnAddGroup" class="btn btn-primary mt-1" disabled>Add Group</button>
-                    <br>
-                    <div id="noMoreGroupWarning"></div>
-                    <br>
-                    
-                    Select a group to join:
-                    <br><br>
-                    <div class="btn-group btn-group-toggle chosenGroup table" style="max-width: 100%; display: block;" data-toggle="buttons" id="selectGroup">
-                        <!-- <label class="btn btn-secondary">
+                <br>
+                <h3>Group Chat</h3>
+                <br>
+                Add a new group:
+                <br>
+                <input type="text" id="groupName" class="form-control" placeholder="Enter Group Name" required>
+                <button id="btnAddGroup" class="btn btn-primary mt-1" disabled>Add Group</button>
+                <br>
+                <div id="noMoreGroupWarning"></div>
+                <br>
+
+                Select a group to join:
+                <br><br>
+                <div class="btn-group btn-group-toggle chosenGroup table" style="max-width: 100%; display: block;"
+                    data-toggle="buttons" id="selectGroup">
+                    <!-- <label class="btn btn-secondary">
                           <input type="radio" name="group" id="option1" autocomplete="off" value="A"> A
                         </label>
                         <label class="btn btn-secondary">
@@ -73,197 +83,165 @@
                         <label class="btn btn-secondary">
                           <input type="radio" name="group" id="option3" autocomplete="off" value="C"> C
                         </label> -->
-                    </div>
-                    <button id="btnJoinGroup" class="btn btn-primary mt-2" disabled>Join Group</button>
-                    <br><br>                                      
-                    <div id="groupMsgAccess" style="display:none;">        
-                        <div id="currentGroupInfo"></div>
-                        <br>  
-                        <input type="text" id="txtMessageGroup" class="form-control" placeholder="Message">
-                        <br>
-                        <button id="btnSendGroup" class="btn btn-primary mt-1" >Send</button>
-                        <br><br>
-                        <div class="container overflow-auto">
-                            <div id="showGroupMessages"></div>
-                        </div>
-                    </div> 
                 </div>
-                
+                <button id="btnJoinGroup" class="btn btn-primary mt-2" disabled>Join Group</button>
+                <br><br>
+                <div id="groupMsgAccess" style="display:none;">
+                    <div id="currentGroupInfo"></div>
+                    <br>
+                    <input type="text" id="txtMessageGroup" class="form-control" placeholder="Message">
+                    <br>
+                    <button id="btnSendGroup" class="btn btn-primary mt-1">Send</button>
+                    <br><br>
+                    <div class="container overflow-auto">
+                        <div id="showGroupMessages"></div>
+                    </div>
+                </div>
             </div>
-        </div>
 
         </div>
-        <script> 
-            // determine the hub that the client will connect to with webSocket
-            $(document).ready(() => {
-                const connection = new signalR.HubConnectionBuilder()
+    </div>
+
+    </div>
+    <script>
+        // determine the hub that the client will connect to with webSocket
+        $(document).ready(() => {
+            const connection = new signalR.HubConnectionBuilder()
                 .withUrl("http://localhost:5001/myhub")
-                .withAutomaticReconnect([1000,1000,2000,5000]) // used when disconnected - parameters are ms 
+                .withAutomaticReconnect([1000, 1000, 2000, 5000]) // used when disconnected - parameters are ms 
                 .build();
-                // if the client couldn't connect to the server these functions will be used
-                async function start() {
-                    try {
-                        await connection.start();
-                    } catch(error) {
-                        setTimeout(() => start(), 2000);
-                    }
+            // if the client couldn't connect to the server these functions will be used
+            async function start() {
+                try {
+                    await connection.start();
+                } catch (error) {
+                    setTimeout(() => start(), 2000);
                 }
+            }
 
-                start();
+            start();
 
-                function animation() {
-                    status.fadeIn(2000, () => {
-                        setTimeout(() => {
-                            status.fadeOut(2000);
-                        }, 2000)
-                    });
-                }
-
-                const status = $("#status");
-                currAlertClass = "alert alert-info"; // holds the current alert's class
-                // this event awakes while trying to reconnect to the server 
-                connection.onreconnecting(error => {
-                    // status.css("background-color", "blue");
-                    // status.css("color", "white");
-                    status.removeClass(currAlertClass);
-                    status.addClass("alert alert-warning");
-                    currAlertClass = "alert alert-warning";
-                    status.html("Connecting...");
-                    animation();
+            function animation() {
+                status.fadeIn(2000, () => {
+                    setTimeout(() => {
+                        status.fadeOut(2000);
+                    }, 2000)
                 });
+            }
 
-                // this event awakes when reconnected to the server
-                connection.onreconnected(connectionId => {
-                    status.removeClass(currAlertClass);
-                    status.addClass("alert alert-success");
-                    currAlertClass = "alert alert-success";
-                    status.html("Connected!");
-                    animation();
+            const status = $("#status");
+            currAlertClass = "alert alert-info"; // holds the current alert's class
+            // this event awakes while trying to reconnect to the server 
+            connection.onreconnecting(error => {
+                // status.css("background-color", "blue");
+                // status.css("color", "white");
+                status.removeClass(currAlertClass);
+                status.addClass("alert alert-warning");
+                currAlertClass = "alert alert-warning";
+                status.html("Connecting...");
+                animation();
+            });
+
+            // this event awakes when reconnected to the server
+            connection.onreconnected(connectionId => {
+                status.removeClass(currAlertClass);
+                status.addClass("alert alert-success");
+                currAlertClass = "alert alert-success";
+                status.html("Connected!");
+                animation();
+            });
+
+            // this event awakes if client couldn't reconnect to the server after trying few times
+            connection.onclose(error => {
+                status.removeClass(currAlertClass);
+                status.addClass("alert alert-danger");
+                currAlertClass = "alert alert-danger";
+                status.html("Connection failed.");
+                animation();
+            });
+
+
+            // server will notify the clients through this event when a user joined
+            connection.on("userJoined", connectionId => {
+                status.removeClass(currAlertClass);
+                status.addClass("alert alert-success");
+                currAlertClass = "alert alert-success";
+                status.html(`${connectionId} joined.`);
+                animation();
+
+            });
+
+            // server will notify the clients through this event when a user left
+            connection.on("userLeft", connectionId => {
+                status.removeClass(currAlertClass);
+                status.addClass("alert alert-danger");
+                currAlertClass = "alert alert-danger";
+                status.html(`${connectionId} left.`);
+                animation();
+            });
+
+            // write the online clients list to the screen
+            connection.on("clients", userNames => {
+                let userNamesTxt = "";
+                $.each(userNames, (index, item) => {
+                    userNamesTxt += `<li class="list-group-item">${item}</li>`;
                 });
+                $("#clients").html(userNamesTxt);
 
-                // this event awakes if client couldn't reconnect to the server after trying few times
-                connection.onclose(error => {
-                    status.removeClass(currAlertClass);
-                    status.addClass("alert alert-danger");
-                    currAlertClass = "alert alert-danger";
-                    status.html("Connection failed.");
-                    animation();
-                });
+            });
 
 
-                // server will notify the clients through this event when a user joined
-                connection.on("userJoined", connectionId => {
-                    status.removeClass(currAlertClass);
-                    status.addClass("alert alert-success");
-                    currAlertClass = "alert alert-success";
-                    status.html(`${connectionId} joined.`);
-                    animation();
-                    
-                });
-
-                // server will notify the clients through this event when a user left
-                connection.on("userLeft", connectionId => {
-                    status.removeClass(currAlertClass);
-                    status.addClass("alert alert-danger");
-                    currAlertClass = "alert alert-danger"; 
-                    status.html(`${connectionId} left.`);
-                    animation();
-                });
-
-                // write the online clients list to the screen
-                connection.on("clients", userNames => {
-                    let userNamesTxt = "";
-                    $.each(userNames, (index, item) => {
-                        userNamesTxt += `<li class="list-group-item">${item}</li>`;
-                    });
-                    $("#clients").html(userNamesTxt);                    
-
-                });
+            let groupCount = 0;
 
 
-                let groupCount = 0;
+            let connectionId_ = "";
+            // send the client's message to the SendMessageAsync method in the server
+            $("#btnSend").click(() => {
+                let message = $("#txtMessage").val();
+                //let connectionIds = $("#connectionIds").val().split(",");
 
+                // send to group chosen with radio buttons
+                //connection.invoke("SendMessageAsync", message, $("input[name=group]:checked").val()).catch(error => console.log(`Error occured while sending a message. ${error}`));
 
-                let connectionId_ = "";
-                // send the client's message to the SendMessageAsync method in the server
-                $("#btnSend").click(() => {
-                    let message = $("#txtMessage").val();
-                    //let connectionIds = $("#connectionIds").val().split(",");
+                // send to clients with specified connectionIds 
+                //connection.invoke("SendMessageAsync", message, connectionIds).catch(error => console.log(`Error occured while sending a message. ${error}`));
 
-                    // send to group chosen with radio buttons
-                    //connection.invoke("SendMessageAsync", message, $("input[name=group]:checked").val()).catch(error => console.log(`Error occured while sending a message. ${error}`));
-                    
-                    // send to clients with specified connectionIds 
-                    //connection.invoke("SendMessageAsync", message, connectionIds).catch(error => console.log(`Error occured while sending a message. ${error}`));
-
-                    // send All, Caller, Others
-                    connection.invoke("SendMessageAsync", message).catch(error => console.log(`Error occured while sending a message. ${error}`));
-                });
-                $("#btnSend").on('keyup', function (e) {
-                 if (e.key === 'Enter' || e.keyCode === 13) {
+                // send All, Caller, Others
                 connection.invoke("SendMessageAsync", message).catch(error => console.log(`Error occured while sending a message. ${error}`));
+            });
+            $("#btnSend").on('keyup', function (e) {
+                if (e.key === 'Enter' || e.keyCode === 13) {
+                    connection.invoke("SendMessageAsync", message).catch(error => console.log(`Error occured while sending a message. ${error}`));
                 }
-});
- 
-                // take the message that have been send from the server with the RPC system
-        connection.on("receiveMessage", (message, connectionId, userName) => {
-                     floatType = "";
-                     classType="";
-                     userNameText = "";
-                    if(connectionId === connectionId_) {
-                        floatType ="right";
-                        classType="warning"
-                        userNameText = ""
-                    }
-                    else {
-                        floatType ="left"
-                        classType="light"
-                        userNameText= "<strong>" + userName + " </strong> <br><div class = 'mt-2'>"
-                    }
-                    let nameAndMsg = "<span class=\"badge badge-" + classType + " float-"+ floatType +"\"> "+userNameText + message + "</div></span><br><br>";
+            });
 
-                    $("#showMessages").append(nameAndMsg);
-                });
-                
+            // take the message that have been send from the server with the RPC system
+            connection.on("receiveMessage", (message, connectionId, userName) => {
+                floatType = "";
+                classType = "";
+                userNameText = "";
+                if (connectionId === connectionId_) {
+                    floatType = "right";
+                    classType = "warning"
+                    userNameText = ""
+                }
+                else {
+                    floatType = "left"
+                    classType = "light"
+                    userNameText = "<strong>" + userName + " </strong> <br><div class = 'mt-2'>"
+                }
+                let nameAndMsg = "<span class=\"badge badge-" + classType + " float-" + floatType + "\"> " + userNameText + message + "</div></span><br><br>";
 
-                $("#btnSendGroup").click(() => {
-                    let message = $("#txtMessageGroup").val();
-                    //let connectionIds = $("#connectionIds").val().split(",");
+                $("#showMessages").append(nameAndMsg);
+            });
 
-                    // send to group chosen with radio buttons
-                    connection.invoke("SendMessageToGroupAsync", message, $("input[name=group]:checked").val()).catch(error => console.log(`Error occured while sending a group message. ${error}`));
-     
-                });
 
-                // receive message for the selectGoups
-                connection.on("receiveGroupMessage", (message, connectionId, userName) => {
-                    floatType="";
-                    classType="";
-                    if(connectionId === connectionId_) {
-                        floatType ="right";
-                        classType="warning";
-                    }
-                    else {
-                       floatType ="left";
-                       classType="light"
-                    }
-                    let nameAndMsg = "<span class=\"badge badge-" + classType + " float-" + floatType + "\">" + "<strong>" + userName + " : </strong>" + message + "</span><br><br>";
-                    $("#showGroupMessages").append(nameAndMsg);
-                });
+            $("#btnSendGroup").click(() => {
+                let message = $("#txtMessageGroup").val();
+                //let connectionIds = $("#connectionIds").val().split(",");
 
-                // write the connectionId of the client
-                connection.on("getConnectionId", connectionId => {
-                    connectionId_ = connectionId;
-                    $("#connectionId").html(`Your Connection ID: ${connectionId}`);
-                });
-
-                let currentGroupName = "";
-                $("#btnJoinGroup").click(() => {
-                    currentGroupName = $("input[name=group]:checked").val();
-                    connection.invoke("JoinGroup", connectionId_, currentGroupName).catch(error => console.log(`Error occured while joining a group. ${error}`));
-                    // remove style display:none
-                    $("#groupMsgAccess").removeAttr("style");
-                });
+                // send to group chosen with radio buttons
+                connection.invoke("SendMessageToGroupAsync", message, $("input[name=group]:checked").val()).catch(error => console.log(`Error occured while sending a group message. ${error}`));
 
                 connection.on("checkJoinGroup", (groupResponse,members) => {
                     // user joined
@@ -300,90 +278,162 @@
                     }
                    
                 });
+            });
 
-                $("#btnAddGroup").click(() => {
-                    if($("#groupName").val()==""){
-                        $("#groupName").addClass("is-invalid");
+            // receive message for the selectGoups
+            connection.on("receiveGroupMessage", (message, connectionId, userName) => {
+                floatType = "";
+                classType = "";
+                if (connectionId === connectionId_) {
+                    floatType = "right";
+                    classType = "warning";
+                }
+                else {
+                    floatType = "left";
+                    classType = "light"
+                }
+                let nameAndMsg = "<span class=\"badge badge-" + classType + " float-" + floatType + "\">" + "<strong>" + userName + " : </strong>" + message + "</span><br><br>";
+                $("#showGroupMessages").append(nameAndMsg);
+            });
+
+            // write the connectionId of the client
+            connection.on("getConnectionId", connectionId => {
+                connectionId_ = connectionId;
+                $("#connectionId").html(`Your Connection ID: ${connectionId}`);
+            });
+
+            let currentGroupName = "";
+            $("#btnJoinGroup").click(() => {
+                currentGroupName = $("input[name=group]:checked").val();
+                connection.invoke("JoinGroup", connectionId_, currentGroupName).catch(error => console.log(`Error occured while joining a group. ${error}`));
+                // remove style display:none
+                $("#groupMsgAccess").removeAttr("style");
+            });
+
+            connection.on("checkJoinGroup", alreadyInGroup => {
+                // user joined
+                if (!alreadyInGroup) {
+                    $("#currentGroupInfo").html("You joined Group " + currentGroupName + " Chat!");
+                    $("#currentGroupInfo").fadeIn(2000, () => {
                         setTimeout(() => {
-                            alert("group name is required!");
-                        }, 200);
-                    }
-                    else{
+                            $("#currentGroupInfo").fadeOut(2000);
+                        }, 2000)
+                    });
+                }
+                else { // user already in group
+                    $("#currentGroupInfo").html("You have already joined Group " + currentGroupName + " Chat!");
+                    $("#currentGroupInfo").fadeIn(2000, () => {
+                        setTimeout(() => {
+                            $("#currentGroupInfo").fadeOut(2000);
+                        }, 2000)
+                    });
+                }
+            });
+            connection.on("notificationJoinGroup", userName => {
+                // user joined
+                if (!alreadyInGroup) {
+                    $("#currentGroupInfo").html("+" + userName + " joined Group " + currentGroupName + " Chat!");
+                    $("#currentGroupInfo").fadeIn(2000, () => {
+                        setTimeout(() => {
+                            $("#currentGroupInfo").fadeOut(2000);
+                        }, 2000)
+                    });
+                }
+
+            });
+
+            $("#btnAddGroup").click(() => {
+                if ($("#groupName").val() == "") {
+                    $("#groupName").addClass("is-invalid");
+                    setTimeout(() => {
+                        alert("group name is required!");
+                    }, 200);
+                }
+                else {
                     let groupName = $("#groupName").val();
                     connection.invoke("AddGroup", connectionId_, groupName).catch(error => console.log(`Error occured while adding a group. ${error}`));
-                    }
+                }
 
+            });
+
+            connection.on("updateGroups", groupNames => {
+                $("#selectGroup").empty();
+                $.each(groupNames, (index, item) => {
+                    let grpName = `${item}`;
+                    $("#selectGroup").append(
+                        $("<label>").prop({
+                            class: "btn btn-secondary"
+                        }).append(
+                            $("<input>").prop({
+                                type: "radio",
+                                name: "group",
+                                autocomplete: "off",
+                                value: grpName
+                            })
+                        ).append(grpName + " <br>")
+                    );
                 });
+            });
 
-                connection.on("updateGroups", groupNames => {
-                    $("#selectGroup").empty();
-                    $.each(groupNames, (index, item) => {
-                        let grpName = `${item}`;
-                        $("#selectGroup").append(
-                            $("<label>").prop({
-                                class:"btn btn-secondary"
-                            }).append(
-                                $("<input>").prop({
-                                    type: "radio",
-                                    name: "group",
-                                    autocomplete: "off",
-                                    value: grpName
-                                })
-                            ).append(grpName + " <br>")
-                        );
+            // add a new group to radio button if it doesn't already exist
+            connection.on("checkAddGroup", (groupAlreadyExists, groupName, connectionId) => {
+                if (groupAlreadyExists == false) {
+                    $("#selectGroup").append(
+                        $("<label>").prop({
+                            class: "btn btn-secondary ml-1 mb-1",
+                            style: "overflow: hidden;text-overflow: ellipsis;max-width: 100%;",
+                            id: groupName
+                        }).append(
+                            $("<input>").prop({
+                                type: "radio",
+                                name: "group",
+                                autocomplete: "off",
+                                value: groupName
+                            })
+                        ).append(groupName + " <br>")
+                    );
+                    groupCount++;
+                }
+                else if (connectionId === connectionId_) {
+                    $("#noMoreGroupWarning").html("This group name is taken!");
+                    $("#noMoreGroupWarning").fadeIn(2000, () => {
+                        setTimeout(() => {
+                            $("#noMoreGroupWarning").fadeOut(2000);
+                        }, 2000)
                     });
-                }); 
+                }
+                if (groupCount >= 6) {
+                    $("#btnAddGroup").prop("disabled", true);
+                }
+            });
 
-                // add a new group to radio button if it doesn't already exist
-                connection.on("checkAddGroup", (groupAlreadyExists, groupName, connectionId) => {
-                    if(groupAlreadyExists == false) {
-                        $("#selectGroup").append(
-                            $("<label>").prop({
-                                class:"btn btn-secondary ml-1 mb-1",
-                                style:"overflow: hidden;text-overflow: ellipsis;max-width: 100%;",
-                                id : groupName
-                            }).append(
-                                $("<input>").prop({
-                                    type: "radio",
-                                    name: "group",
-                                    autocomplete: "off",
-                                    value: groupName
-                                })
-                            ).append(groupName + " <br>")
-                        );
-                        groupCount++;
-                    }
-                    else if(connectionId === connectionId_){         
-                        $("#noMoreGroupWarning").html("This group name is taken!");
-                        $("#noMoreGroupWarning").fadeIn(2000, () => {
-                            setTimeout(() => {
-                                $("#noMoreGroupWarning").fadeOut(2000);
-                            }, 2000)
-                        });
-                    }
-                    if(groupCount >= 6) {
-                        $("#btnAddGroup").prop("disabled", true);
-                    }
-                });
+            // when the chosen group has changed
+            $(".chosenGroup").click(() => {
+                $("#showGroupMessages").empty();
+                $("#groupMsgAccess").css("display", "none");
+                // remove the user from the group
+                connection.invoke("RemoveGroup", connectionId_, currentGroupName).catch(error => console.log(`Error occured while removing a user from a group. ${error}`));
+            });
 
-                // when the chosen group has changed
-                $(".chosenGroup").click(() => {
-                    $("#showGroupMessages").empty();
-                    $("#groupMsgAccess").css("display", "none");
-                    // remove the user from the group
-                    connection.invoke("RemoveGroup", connectionId_, currentGroupName).catch(error => console.log(`Error occured while removing a user from a group. ${error}`));
-                });
+            $("#groupName").click(() => {
+                $("#groupName").removeClass("is-invalid");
+            });
 
-                $("#groupName").click(() => {
-                    $("#groupName").removeClass("is-invalid");
-                });
+            // add username
+            $("#confirmUserName").click(() => {
+                let userName = $("#userName").val();
 
-                // add username
-                $("#confirmUserName").click(() => {
-                    let userName = $("#userName").val();
+                // send the username and connectionId to the server
+                connection.invoke("addUserName", userName, connectionId_).catch(error => console.log(`Error occured while adding a username. ${error}`));
 
-                    // send the username and connectionId to the server
-                    connection.invoke("addUserName", userName, connectionId_).catch(error => console.log(`Error occured while adding a username. ${error}`));
+
+
+            });
+
+            // check username
+            connection.on("checkUserName", (returnVal, userName) => {
+                // username added
+                if (returnVal == 1) {
                     $("#helloUser").html("Hi " + userName + "!");
 
                     // disable username entrance
@@ -393,10 +443,23 @@
                     $("#btnSend").prop("disabled", false);
                     $("#btnJoinGroup").prop("disabled", false);
                     $("#btnAddGroup").prop("disabled", false);
-                    
-                });
-                
-            }); 
-        </script>
-    </body>
+                }
+                else if (returnVal == 0) {
+                    //$("#helloUser").html("Username should only contain letters or digits!");
+                    setTimeout(() => {
+                        alert("Username should only contain letters or digits!");
+                    }, 200);
+                }
+                else if (returnVal == -1) {
+                    //$("#helloUser").html("This username is already taken!");
+                    setTimeout(() => {
+                        alert("This username is already taken!");
+                    }, 200);
+                }
+            });
+
+        }); 
+    </script>
+</body>
+
 </html>
