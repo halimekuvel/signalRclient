@@ -199,16 +199,29 @@
                     // send All, Caller, Others
                     connection.invoke("SendMessageAsync", message).catch(error => console.log(`Error occured while sending a message. ${error}`));
                 });
-
+                $("#btnSend").on('keyup', function (e) {
+                 if (e.key === 'Enter' || e.keyCode === 13) {
+                connection.invoke("SendMessageAsync", message).catch(error => console.log(`Error occured while sending a message. ${error}`));
+                }
+});
+ 
                 // take the message that have been send from the server with the RPC system
-                connection.on("receiveMessage", (message, connectionId, userName) => {
-                    let nameAndMsg = "";
+        connection.on("receiveMessage", (message, connectionId, userName) => {
+                     floatType = "";
+                     classType="";
+                     userNameText = "";
                     if(connectionId === connectionId_) {
-                        nameAndMsg = "<span class=\"badge badge-light float-right\">" + "<strong>" + userName + " : </strong>" + message + "</span><br><br>";
+                        floatType ="right";
+                        classType="warning"
+                        userNameText = ""
                     }
                     else {
-                        nameAndMsg = "<span class=\"badge badge-warning float-left\">" + "<strong>" + userName + " : </strong>" + message + "</span><br><br>";
+                        floatType ="left"
+                        classType="light"
+                        userNameText= "<strong>" + userName + " </strong> <br><div class = 'mt-2'>"
                     }
+                    let nameAndMsg = "<span class=\"badge badge-" + classType + " float-"+ floatType +"\"> "+userNameText + message + "</div></span><br><br>";
+
                     $("#showMessages").append(nameAndMsg);
                 });
                 
@@ -224,13 +237,17 @@
 
                 // receive message for the selectGoups
                 connection.on("receiveGroupMessage", (message, connectionId, userName) => {
-                    let nameAndMsg = "";
+                    floatType="";
+                    classType="";
                     if(connectionId === connectionId_) {
-                        nameAndMsg = "<span class=\"badge badge-light float-right\">" + "<strong>" + userName + " : </strong>" + message + "</span><br><br>";
+                        floatType ="right";
+                        classType="warning";
                     }
                     else {
-                        nameAndMsg = "<span class=\"badge badge-warning float-left\">" + "<strong>" + userName + " : </strong>" + message + "</span><br><br>";
+                       floatType ="left";
+                       classType="light"
                     }
+                    let nameAndMsg = "<span class=\"badge badge-" + classType + " float-" + floatType + "\">" + "<strong>" + userName + " : </strong>" + message + "</span><br><br>";
                     $("#showGroupMessages").append(nameAndMsg);
                 });
 
@@ -266,6 +283,18 @@
                             }, 2000)
                         });
                     }
+                });
+                connection.on("notificationJoinGroup", userName => {
+                    // user joined
+                    if(!alreadyInGroup) {
+                        $("#currentGroupInfo").html("+"+userName+" joined Group " + currentGroupName + " Chat!");
+                        $("#currentGroupInfo").fadeIn(2000, () => {
+                            setTimeout(() => {
+                                $("#currentGroupInfo").fadeOut(2000);
+                            }, 2000)
+                        });
+                    }
+                   
                 });
 
                 $("#btnAddGroup").click(() => {
@@ -307,7 +336,8 @@
                         $("#selectGroup").append(
                             $("<label>").prop({
                                 class:"btn btn-secondary ml-1 mb-1",
-                                style:"overflow: hidden;text-overflow: ellipsis;max-width: 100%;"
+                                style:"overflow: hidden;text-overflow: ellipsis;max-width: 100%;",
+                                id : groupName
                             }).append(
                                 $("<input>").prop({
                                     type: "radio",
