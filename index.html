@@ -162,12 +162,20 @@
 
 
             // server will notify the clients through this event when a user joined
-            connection.on("userJoined", connectionId => {
+            connection.on("userJoined", connectionName => {
                 status.removeClass(currAlertClass);
                 status.addClass("alert alert-success");
                 currAlertClass = "alert alert-success";
-                status.html(`${connectionId} joined.`);
-                animation();
+                if(checkUserName(connectionName)){
+                    status.html(`${connectionName} joined.`);
+                    animation();
+                }
+                else{
+                    setTimeout(() => {
+                        alert("This username is already taken!");
+                    }, 200);
+                }
+                
 
             });
 
@@ -299,7 +307,7 @@
             // write the connectionId of the client
             connection.on("getConnectionId", connectionId => {
                 connectionId_ = connectionId;
-                $("#connectionId").html(`Your Connection ID: ${connectionId}`);
+                // $("#connectionId").html(`Your Connection ID: ${connectionId}`);
             });
 
             let currentGroupName = "";
@@ -429,35 +437,17 @@
 
 
             });
-
-            // check username
-            connection.on("checkUserName", (returnVal, userName) => {
-                // username added
-                if (returnVal == 1) {
+            function checkUserName(userName) {
+                if (userName) {
                     $("#helloUser").html("Hi " + userName + "!");
-
-                    // disable username entrance
                     $("#confirmUserName").prop("disabled", true);
-
-                    // enable chat and join group
                     $("#btnSend").prop("disabled", false);
                     $("#btnJoinGroup").prop("disabled", false);
                     $("#btnAddGroup").prop("disabled", false);
+                    return true;   
                 }
-                else if (returnVal == 0) {
-                    //$("#helloUser").html("Username should only contain letters or digits!");
-                    setTimeout(() => {
-                        alert("Username should only contain letters or digits!");
-                    }, 200);
-                }
-                else if (returnVal == -1) {
-                    //$("#helloUser").html("This username is already taken!");
-                    setTimeout(() => {
-                        alert("This username is already taken!");
-                    }, 200);
-                }
-            });
-
+                return false;
+            }
         }); 
     </script>
 </body>
