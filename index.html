@@ -14,7 +14,6 @@
 </head>
 
 <body>
-
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
@@ -200,6 +199,9 @@
             $("#btnSend").click(() => {
                 let message = $("#txtMessage").val();
                 //let connectionIds = $("#connectionIds").val().split(",");
+                //Resetting input fields after message is sent
+                $("#txtMessage").val("");
+                $("#txtMessage").removeClass("is-invalid");
 
                 // send to group chosen with radio buttons
                 //connection.invoke("SendMessageAsync", message, $("input[name=group]:checked").val()).catch(error => console.log(`Error occured while sending a message. ${error}`));
@@ -240,7 +242,8 @@
             $("#btnSendGroup").click(() => {
                 let message = $("#txtMessageGroup").val();
                 //let connectionIds = $("#connectionIds").val().split(",");
-
+                $("#txtMessageGroup").val("");
+                $("#txtMessageGroup").removeClass("is-invalid");
                 // send to group chosen with radio buttons
                 connection.invoke("SendMessageToGroupAsync", message, $("input[name=group]:checked").val()).catch(error => console.log(`Error occured while sending a group message. ${error}`));
 
@@ -354,6 +357,8 @@
                     let groupName = $("#groupName").val();
                     connection.invoke("AddGroup", connectionId_, groupName).catch(error => console.log(`Error occured while adding a group. ${error}`));
                 }
+                $("#groupName").val("");
+                $("#groupName").removeClass("is-invalid");
 
             });
 
@@ -423,6 +428,8 @@
             // add username
             $("#confirmUserName").click(() => {
                 let userName = $("#userName").val();
+                // After login, username text should be disabled
+                $("#userName").prop("disabled", true);
                 // send the username and connectionId to the server
                 connection.invoke("AddUserName", userName, connectionId_).catch(error => console.log(`Error occured while adding a username. ${error}`));
 
