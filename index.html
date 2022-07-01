@@ -282,7 +282,7 @@
                 $("#groupMsgAccess").removeAttr("style");
             });
 
-            connection.on("checkJoinGroup", (groupResponse, members) => {
+            connection.on("checkJoinGroup", (groupResponse) => {
                 // user joined
                 if(!groupResponse.clienInGroup) {
                     $("#currentGroupInfo").html("You joined Group " + currentGroupName + " Chat!");
@@ -291,8 +291,10 @@
                             $("#currentGroupInfo").fadeOut(2000);
                         }, 2000)
                     });
-
+                    debugger
                     // change button color 
+
+                    $(".chosenGroup label[class='btn btn-secondary active']").attr("class", " btn btn-success active");
                     
 
                 }
@@ -428,6 +430,7 @@
                         }, 2000)
                     });
                 }
+                console.log(groupCount);
                 if (groupCount >= 6) {
                     $("#btnAddGroup").prop("disabled", true);
                 }
