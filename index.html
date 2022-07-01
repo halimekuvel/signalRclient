@@ -247,41 +247,7 @@
                 // send to group chosen with radio buttons
                 connection.invoke("SendMessageToGroupAsync", message, $("input[name=group]:checked").val()).catch(error => console.log(`Error occured while sending a group message. ${error}`));
 
-                connection.on("checkJoinGroup", (groupResponse,members) => {
-                    // user joined
-                    debugger
-                    members=[];
-                    members=groupResponse.members;
-                    debugger
-                    if(!groupResponse.clienInGroup) {
-                        $("#currentGroupInfo").html("You joined Group " + currentGroupName + " Chat!");
-                        $("#currentGroupInfo").fadeIn(2000, () => {
-                            setTimeout(() => {
-                                $("#currentGroupInfo").fadeOut(2000);
-                            }, 2000)
-                        });
-                    }
-                    else { // user already in group
-                        $("#currentGroupInfo").html("You have already joined Group " + currentGroupName + " Chat!");
-                        $("#currentGroupInfo").fadeIn(2000, () => {
-                            setTimeout(() => {
-                                $("#currentGroupInfo").fadeOut(2000);
-                            }, 2000)
-                        });
-                    }
-                });
-                connection.on("notificationJoinGroup", userName => {
-                    // user joined
-                    if(!alreadyInGroup) {
-                        $("#currentGroupInfo").html("+"+userName+" joined Group " + currentGroupName + " Chat!");
-                        $("#currentGroupInfo").fadeIn(2000, () => {
-                            setTimeout(() => {
-                                $("#currentGroupInfo").fadeOut(2000);
-                            }, 2000)
-                        });
-                    }
-                   
-                });
+                
             });
 
             // receive message for the selectGoups
@@ -314,15 +280,19 @@
                 $("#groupMsgAccess").removeAttr("style");
             });
 
-            connection.on("checkJoinGroup", alreadyInGroup => {
+            connection.on("checkJoinGroup", (groupResponse, members) => {
                 // user joined
-                if (!alreadyInGroup) {
+                if(!groupResponse.clienInGroup) {
                     $("#currentGroupInfo").html("You joined Group " + currentGroupName + " Chat!");
                     $("#currentGroupInfo").fadeIn(2000, () => {
                         setTimeout(() => {
                             $("#currentGroupInfo").fadeOut(2000);
                         }, 2000)
                     });
+
+                    // change button color 
+                    
+
                 }
                 else { // user already in group
                     $("#currentGroupInfo").html("You have already joined Group " + currentGroupName + " Chat!");
@@ -335,16 +305,49 @@
             });
             connection.on("notificationJoinGroup", userName => {
                 // user joined
-                if (!alreadyInGroup) {
-                    $("#currentGroupInfo").html("+" + userName + " joined Group " + currentGroupName + " Chat!");
+                if(!alreadyInGroup) {
+                    $("#currentGroupInfo").html("+"+userName+" joined Group " + currentGroupName + " Chat!");
                     $("#currentGroupInfo").fadeIn(2000, () => {
                         setTimeout(() => {
                             $("#currentGroupInfo").fadeOut(2000);
                         }, 2000)
                     });
                 }
-
+                
             });
+
+            // connection.on("checkJoinGroup", alreadyInGroup => {
+            //     // user joined
+            //     if (!alreadyInGroup) {
+            //         $("#currentGroupInfo").html("You joined Group " + currentGroupName + " Chat!");
+            //         $("#currentGroupInfo").fadeIn(2000, () => {
+            //             setTimeout(() => {
+            //                 $("#currentGroupInfo").fadeOut(2000);
+            //             }, 2000)
+            //         });
+            //     }
+            //     else { // user already in group
+            //         $("#currentGroupInfo").html("You have already joined Group " + currentGroupName + " Chat!");
+            //         $("#currentGroupInfo").fadeIn(2000, () => {
+            //             setTimeout(() => {
+            //                 $("#currentGroupInfo").fadeOut(2000);
+            //             }, 2000)
+            //         });
+            //     }
+            // });
+
+            // connection.on("notificationJoinGroup", userName => {
+            //     // user joined
+            //     if (!alreadyInGroup) {
+            //         $("#currentGroupInfo").html("+" + userName + " joined Group " + currentGroupName + " Chat!");
+            //         $("#currentGroupInfo").fadeIn(2000, () => {
+            //             setTimeout(() => {
+            //                 $("#currentGroupInfo").fadeOut(2000);
+            //             }, 2000)
+            //         });
+            //     }
+
+            // });
 
             $("#btnAddGroup").click(() => {
                 if ($("#groupName").val() == "") {
@@ -368,7 +371,9 @@
                     let grpName = `${item}`;
                     $("#selectGroup").append(
                         $("<label>").prop({
-                            class: "btn btn-secondary"
+                            class: "btn btn-secondary",
+                            style: "overflow: hidden;text-overflow: ellipsis;max-width: 100%;",
+                            id: grpName
                         }).append(
                             $("<input>").prop({
                                 type: "radio",
@@ -383,10 +388,15 @@
 
             // add a new group to radio button if it doesn't already exist
             connection.on("checkAddGroup", (groupAlreadyExists, groupName, connectionId) => {
+                className = "";
+                if(connectionId == connectionId_)
+                    className =  "btn btn-success ml-1 mb-1";
+                else
+                    className =  "btn btn-secondary ml-1 mb-1";
                 if (groupAlreadyExists == false) {
                     $("#selectGroup").append(
                         $("<label>").prop({
-                            class: "btn btn-secondary ml-1 mb-1",
+                            class: className,
                             style: "overflow: hidden;text-overflow: ellipsis;max-width: 100%;",
                             id: groupName
                         }).append(
@@ -433,9 +443,12 @@
                 // send the username and connectionId to the server
                 connection.invoke("AddUserName", userName, connectionId_).catch(error => console.log(`Error occured while adding a username. ${error}`));
 
-
-
             });
+
+            $("#selectGroup").click(()=>{
+                console.log("test");
+            });
+
             function configureLoginFields(userName) {
                 if (userName) {
                     $("#helloUser").html("Hi " + userName + "!");
