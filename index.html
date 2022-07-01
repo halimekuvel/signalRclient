@@ -214,9 +214,10 @@
                 // send All, Caller, Others
                 connection.invoke("SendMessageAsync", message).catch(error => console.log(`Error occured while sending a message. ${error}`));
             });
-            $("#btnSend").on('keyup', function (e) {
-                if (e.key === 'Enter' || e.keyCode === 13) {
-                    connection.invoke("SendMessageAsync", message).catch(error => console.log(`Error occured while sending a message. ${error}`));
+            // enter key to send the message
+            $("#txtMessage").keypress(function(e) {
+                if (e.which == 13) {
+                    $("#btnSend").click();
                 }
             });
 
@@ -241,15 +242,19 @@
             });
 
 
-            $("#btnSendGroup").click(() => {
+                $("#btnSendGroup").click(() => {
                 let message = $("#txtMessageGroup").val();
                 //let connectionIds = $("#connectionIds").val().split(",");
                 $("#txtMessageGroup").val("");
                 $("#txtMessageGroup").removeClass("is-invalid");
                 // send to group chosen with radio buttons
                 connection.invoke("SendMessageToGroupAsync", message, $("input[name=group]:checked").val()).catch(error => console.log(`Error occured while sending a group message. ${error}`));
-
-                
+            });
+            // enter key to send the message
+            $("#txtMessageGroup").keypress(function(e) {
+                if (e.which == 13) {
+                    $("#btnSendGroup").click();
+                }
             });
 
             // receive message for the selectGoups
@@ -281,6 +286,13 @@
                 // remove style display:none
                 $("#groupMsgAccess").removeAttr("style");
             });
+            // enter key to send the message
+            $("#txtMessageGroup").keypress(function(e) {
+                if (e.which == 13) {
+                    $("#btnJoinGroup").click();
+                }
+            });
+
 
             connection.on("checkJoinGroup", (groupResponse) => {
                 // user joined
@@ -369,6 +381,14 @@
                 $("#groupName").removeClass("is-invalid");
 
             });
+            // enter key to send the message
+            $("#groupName").keypress(function(e) {
+                if (e.which == 13) {
+                    $("#btnAddGroup").click();
+                }
+            });
+
+
 
             connection.on("updateGroups", groupNames => {
                 $("#selectGroup").empty();
@@ -454,13 +474,18 @@
                 let userName = $("#userName").val();
 
                 // send the username and connectionId to the server
-                connection.invoke("AddUserName", userName, connectionId_).catch(error => console.log(`Error occured while adding a username. ${error}`));
-                // don't accept username if username is take
+                connection.invoke("AddUserName", userName, connectionId_).catch(error => console.log(`Error occured while adding a username. ${error}`));                
 
             });
+            // enter key to send the message
+            $("#userName").keypress(function(e) {
+                if (e.which == 13) {
+                    $("#confirmUserName").click();
+                }
+            });
+            
 
             $("#selectGroup").click(()=>{
-                console.log("test");
             });
 
             function configureLoginFields(userName) {
