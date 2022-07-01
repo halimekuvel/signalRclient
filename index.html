@@ -166,17 +166,10 @@
                 status.removeClass(currAlertClass);
                 status.addClass("alert alert-success");
                 currAlertClass = "alert alert-success";
-                if(checkUserName(connectionName)){
+                if(configureLoginFields(connectionName)){
                     status.html(`${connectionName} joined.`);
                     animation();
-                }
-                else{
-                    setTimeout(() => {
-                        alert("This username is already taken!");
-                    }, 200);
-                }
-                
-
+                };              
             });
 
             // server will notify the clients through this event when a user left
@@ -430,14 +423,13 @@
             // add username
             $("#confirmUserName").click(() => {
                 let userName = $("#userName").val();
-
                 // send the username and connectionId to the server
-                connection.invoke("addUserName", userName, connectionId_).catch(error => console.log(`Error occured while adding a username. ${error}`));
+                connection.invoke("AddUserName", userName, connectionId_).catch(error => console.log(`Error occured while adding a username. ${error}`));
 
 
 
             });
-            function checkUserName(userName) {
+            function configureLoginFields(userName) {
                 if (userName) {
                     $("#helloUser").html("Hi " + userName + "!");
                     $("#confirmUserName").prop("disabled", true);
