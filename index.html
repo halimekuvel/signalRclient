@@ -8,7 +8,6 @@
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <script src="signalr.min.js"></script>
-    <script src="jquery.min.js"></script>
 
     <title>Let's chat!</title>
 </head>
@@ -259,19 +258,23 @@
             });
 
             // receive message for the selectGoups
-            connection.on("receiveGroupMessage", (message, connectionId, userName) => {
-                floatType = "";
-                classType = "";
-                if (connectionId === connectionId_) {
-                    floatType = "right";
-                    classType = "warning";
+            connection.on("receiveGroupMessage", resp => {
+                response = JSON.parse(resp);
+                if(response.groupName == $("input[name=group]:checked").val()) {
+                    floatType = "";
+                    classType = "";
+                    if (response.connectionId === connectionId_) {
+                        floatType = "right";
+                        classType = "warning";
+                    }
+                    else {
+                        floatType = "left";
+                        classType = "light"
+                    }
+                    let nameAndMsg = "<span class=\"badge badge-" + classType + " float-" + floatType + "\">" + "<strong>" + response.sender + " : </strong>" + response.message + "</span><br><br>";
+                    $("#showGroupMessages").append(nameAndMsg);
                 }
-                else {
-                    floatType = "left";
-                    classType = "light"
-                }
-                let nameAndMsg = "<span class=\"badge badge-" + classType + " float-" + floatType + "\">" + "<strong>" + userName + " : </strong>" + message + "</span><br><br>";
-                $("#showGroupMessages").append(nameAndMsg);
+                
             });
 
             // write the connectionId of the client
@@ -430,15 +433,6 @@
 
             });
 
-
-            // when the chosen group has changed
-            $(".chosenGroup").click(() => {
-                $("#showGroupMessages").empty();
-                $("#groupMsgAccess").css("display", "none");
-                // remove the user from the group
-                //connection.invoke("RemoveGroup", connectionId_, currentGroupName).catch(error => console.log(`Error occured while removing a user from a group. ${error}`));
-            });
-
             $("#groupName").click(() => {
                 $("#groupName").removeClass("is-invalid");
             });
@@ -457,10 +451,26 @@
                     $("#confirmUserName").click();
                 }
             });
-            
+       
+            // when the chosen group has changed    
+            document.querySelector('.chosenGroup').addEventListener('click',() => {
+                setTimeout(()=>{
+                selectedBtn = $(".chosenGroup label input[name='group']:checked");
+                if(selectedBtn.val() != currentGroupName) {
+                    $("#showGroupMessages").empty();
+                    if(selectedBtn.parent().hasClass("btn-secondary")) {
+                         $("#groupMsgAccess").css("display", "none");
+                    }
+                    else{
+                        // remove style display:none
+                        $("#groupMsgAccess").removeAttr("style");
+                    }
+                }
+                currentGroupName = selectedBtn.val();
+            }, 1)
+            })
 
-            $("#selectGroup").click(()=>{
-            });
+
 
             function configureLoginFields(userName) {
                 if (userName) {
@@ -476,5 +486,8 @@
         }); 
     </script>
 </body>
+<footer>
+    <script src="jquery.min.js"></script>
+</footer>
 
 </html>
