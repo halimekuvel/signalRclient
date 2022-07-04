@@ -286,12 +286,7 @@
                 // remove style display:none
                 $("#groupMsgAccess").removeAttr("style");
             });
-            // enter key to send the message
-            $("#txtMessageGroup").keypress(function(e) {
-                if (e.which == 13) {
-                    $("#btnJoinGroup").click();
-                }
-            });
+
 
 
             connection.on("checkJoinGroup", (groupResponse) => {
@@ -303,7 +298,7 @@
                             $("#currentGroupInfo").fadeOut(2000);
                         }, 2000)
                     });
-                    debugger
+                    
                     // change button color 
 
                     $(".chosenGroup label[class='btn btn-secondary active']").attr("class", " btn btn-success active");
@@ -381,15 +376,26 @@
                 $("#groupName").removeClass("is-invalid");
 
             });
+
             // enter key to send the message
             $("#groupName").keypress(function(e) {
                 if (e.which == 13) {
                     $("#btnAddGroup").click();
                 }
             });
-
-
-
+            connection.on("groupLimitReached", () => {
+              
+                    $("#groupName").prop("disabled", true);
+                    $("#btnAddGroup").prop("disabled", true);
+                    $("#noMoreGroupWarning").html("You have reached the maximum number of groups! (Maximum 6 groups)");
+                    $("#noMoreGroupWarning").fadeIn(2000, () => {
+                        setTimeout(() => {
+                            $("#noMoreGroupWarning").fadeOut(2000);
+                        }, 2000)
+                    });
+                
+            }
+            );
             connection.on("updateGroups", groupNames => {
                 $("#selectGroup").empty();
                 $.each(groupNames, (index, item) => {
@@ -450,10 +456,7 @@
                         }, 2000)
                     });
                 }
-                console.log(groupCount);
-                if (groupCount >= 6) {
-                    $("#btnAddGroup").prop("disabled", true);
-                }
+
             });
 
 
