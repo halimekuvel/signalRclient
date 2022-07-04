@@ -174,11 +174,12 @@
             });
 
             // server will notify the clients through this event when a user left
-            connection.on("userLeft", connectionId => {
+
+            connection.on("userLeft", connectionName => {
                 status.removeClass(currAlertClass);
                 status.addClass("alert alert-danger");
                 currAlertClass = "alert alert-danger";
-                status.html(`${connectionId} left.`);
+                status.html(`${connectionName} left.`);
                 animation();
             });
 
@@ -287,15 +288,6 @@
                 $("#groupMsgAccess").removeAttr("style");
             });
 
-<<<<<<< HEAD
-=======
-            // enter key to send the message
-            $("#txtMessageGroup").keypress(function(e) {
-                if (e.which == 13) {
-                    $("#btnJoinGroup").click();
-                }
-            });
->>>>>>> 03e99e9d39b41e2ef3aaee4a26725652a9989415
 
             connection.on("checkJoinGroup", (groupResponse) => {
                 // user joined
@@ -306,10 +298,7 @@
                             $("#currentGroupInfo").fadeOut(2000);
                         }, 2000)
                     });
-<<<<<<< HEAD
                     
-=======
->>>>>>> 03e99e9d39b41e2ef3aaee4a26725652a9989415
                     // change button color 
                     $(".chosenGroup label[class='btn btn-secondary active']").attr("class", " btn btn-success active");
                     
@@ -361,7 +350,6 @@
                     $("#btnAddGroup").click();
                 }
             });
-<<<<<<< HEAD
             connection.on("groupLimitReached", () => {
               
                     $("#groupName").prop("disabled", true);
@@ -375,9 +363,6 @@
                 
             }
             );
-=======
-
->>>>>>> 03e99e9d39b41e2ef3aaee4a26725652a9989415
             connection.on("updateGroups", groupNames => {
                 $("#selectGroup").empty();
                 $.each(groupNames, (index, item) => {
