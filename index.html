@@ -301,7 +301,7 @@
                             $("#currentGroupInfo").fadeOut(2000);
                         }, 2000)
                     });
-                    
+
                     // change button color 
                     $(".chosenGroup label[class='btn btn-secondary active']").attr("class", " btn btn-success active");
                     
@@ -354,18 +354,16 @@
                 }
             });
             connection.on("groupLimitReached", () => {
-              
-                    $("#groupName").prop("disabled", true);
-                    $("#btnAddGroup").prop("disabled", true);
-                    $("#noMoreGroupWarning").html("You have reached the maximum number of groups! (Maximum 6 groups)");
-                    $("#noMoreGroupWarning").fadeIn(2000, () => {
-                        setTimeout(() => {
-                            $("#noMoreGroupWarning").fadeOut(2000);
-                        }, 2000)
-                    });
-                
-            }
-            );
+                $("#groupName").prop("disabled", true);
+                $("#btnAddGroup").prop("disabled", true);
+                $("#noMoreGroupWarning").html("You have reached the maximum number of groups! (Maximum 6 groups)");
+                $("#noMoreGroupWarning").fadeIn(2000, () => {
+                    setTimeout(() => {
+                        $("#noMoreGroupWarning").fadeOut(2000);
+                    }, 2000)
+                });
+            });
+
             connection.on("updateGroups", groupNames => {
                 $("#selectGroup").empty();
                 $.each(groupNames, (index, item) => {
@@ -455,20 +453,20 @@
             // when the chosen group has changed    
             document.querySelector('.chosenGroup').addEventListener('click',() => {
                 setTimeout(()=>{
-                selectedBtn = $(".chosenGroup label input[name='group']:checked");
-                if(selectedBtn.val() != currentGroupName) {
-                    $("#showGroupMessages").empty();
-                    if(selectedBtn.parent().hasClass("btn-secondary")) {
-                         $("#groupMsgAccess").css("display", "none");
+                    let selectedBtn = $(".chosenGroup label input[name='group']:checked");
+                    if(selectedBtn.val() != currentGroupName) {
+                        $("#showGroupMessages").empty();
+                        if(selectedBtn.parent().hasClass("btn-secondary")) {
+                            $("#groupMsgAccess").css("display", "none");
+                        }
+                        else{
+                            // remove style display:none
+                            $("#groupMsgAccess").removeAttr("style");
+                        }
                     }
-                    else{
-                        // remove style display:none
-                        $("#groupMsgAccess").removeAttr("style");
-                    }
-                }
-                currentGroupName = selectedBtn.val();
-            }, 1)
-            })
+                    currentGroupName = selectedBtn.val();
+                }, 1)
+            });
 
 
 
