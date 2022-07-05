@@ -86,6 +86,7 @@
                 <br><br>
                 <div id="groupMsgAccess" style="display:none;">
                     <div id="currentGroupInfo"></div>
+                    <div id="currentGroupName"></div>
                     <br>
                     <input type="text" id="txtMessageGroup" class="form-control" placeholder="Message">
                     <br>
@@ -259,7 +260,7 @@
 
             // receive message for the selectGoups
             connection.on("receiveGroupMessage", resp => {
-                response = JSON.parse(resp);
+                let response = JSON.parse(resp);
                 if(response.groupName == $("input[name=group]:checked").val()) {
                     floatType = "";
                     classType = "";
@@ -293,18 +294,19 @@
 
 
             connection.on("checkJoinGroup", (groupResponse) => {
+                groupResponse_ = JSON.parse(groupResponse);
                 // user joined
-                if(!groupResponse.clienInGroup) {
+                if(groupResponse_.ClienInGroup) {
                     $("#currentGroupInfo").html("You joined Group " + currentGroupName + " Chat!");
                     $("#currentGroupInfo").fadeIn(2000, () => {
                         setTimeout(() => {
                             $("#currentGroupInfo").fadeOut(2000);
                         }, 2000)
                     });
-
+                    $("#currentGroupName").html("Group " + currentGroupName + " Chat:");
                     // change button color 
-                    $(".chosenGroup label[class='btn btn-secondary active']").attr("class", " btn btn-success active");
-                    
+                   //$(".chosenGroup label[class='btn btn-secondary active']").attr("class", " btn btn-success active");
+                   $(".chosenGroup .active").attr("class", "btn btn-success active")
 
                 }
                 else { // user already in group
@@ -455,20 +457,36 @@
             document.querySelector('.chosenGroup').addEventListener('click',() => {
                 setTimeout(()=>{
                     let selectedBtn = $(".chosenGroup label input[name='group']:checked");
+                    // if a different group has been selected
                     if(selectedBtn.val() != currentGroupName) {
                         $("#showGroupMessages").empty();
+                        // if user not in that group
                         if(selectedBtn.parent().hasClass("btn-secondary")) {
                             $("#groupMsgAccess").css("display", "none");
                         }
-                        else{
+                        else{ // if user is also in that group
+                            // get previous messages from server
+                            $("#currentGroupName").html("Group " + selectedBtn.val() + " Chat:");
+                            connection.invoke("GetPrevGroupMsgs", selectedBtn.val()).catch(error => console.log(`Error occured while loading previous group messages. ${error}`)); 
+
                             // remove style display:none
-                            $("#groupMsgAccess").removeAttr("style");
+                            //$("#groupMsgAccess").removeAttr("style"); 
                         }
                     }
                     currentGroupName = selectedBtn.val();
                 }, 1)
             });
 
+            connection.on("receivePrevGroupMsgs", messages => {
+                let messages_ = JSON.parse(messages);
+                debugger
+                $.each(messages_, (index, item) => {
+                    console.log(`${item}`);
+                    connection.invoke("receiveGroupMessage",  `${item}`);
+                });
+
+
+            });
 
 
             function configureLoginFields(userName) {
