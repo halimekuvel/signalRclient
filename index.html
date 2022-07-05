@@ -319,8 +319,8 @@
 
             connection.on("notificationJoinGroup", userName => {
                 // user joined
-                if(!alreadyInGroup) {
-                    $("#currentGroupInfo").html("+" + userName + " joined Group " + currentGroupName + " Chat!");
+                if(userName != localStorage.getItem("userName_")) {
+                    $("#currentGroupInfo").html(userName + " joined Group " + currentGroupName + " Chat!");
                     $("#currentGroupInfo").fadeIn(2000, () => {
                         setTimeout(() => {
                             $("#currentGroupInfo").fadeOut(2000);
