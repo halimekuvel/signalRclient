@@ -174,11 +174,11 @@
 
             // server will notify the clients through this event when a user left
 
-            connection.on("userLeft", connectionName => {     
+            connection.on("userLeft", connectionId => {     
                 status.removeClass(currAlertClass);
                 status.addClass("alert alert-danger");
                 currAlertClass = "alert alert-danger";
-                status.html(`${connectionName} left.`);
+                status.html(`${connectionId} left.`);
                 animation();
             });
 
@@ -385,10 +385,15 @@
                 });
             });
             connection.on("checkUserName", userName => {
+                
                 $("#userName").addClass("is-invalid");
                 setTimeout(() => {
                     alert("This username already taken! Please enter another username.");
-                }, 200);
+             }, 200);    
+                setTimeout(() => {
+                    $("#userName").removeClass("is-invalid");
+                }, 200);   
+                $("#userName").val("");
             }
             );
             
