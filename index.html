@@ -294,6 +294,7 @@
                 connection.invoke("JoinGroup", connectionId_, currentGroupName).catch(error => console.log(`Error occured while joining a group. ${error}`));
                 // remove style display:none
                 $("#groupMsgAccess").removeAttr("style");
+                $("#btnJoinGroup").css("display", "none"); // hide join button
             });
 
 
@@ -406,8 +407,12 @@
             // add a new group to radio button if it doesn't already exist
             connection.on("checkAddGroup", (groupAlreadyExists, groupName, connectionId) => {
                 className = "";
-                if(connectionId == connectionId_)
+                if(connectionId == connectionId_){
                     className =  "btn btn-success ml-1 mb-1";
+
+                    $("#groupMsgAccess").removeAttr("style"); // show group chat box
+                    $("#btnJoinGroup").css("display", "none"); // hide join button
+                }
                 else
                     className =  "btn btn-secondary ml-1 mb-1";
                 if (groupAlreadyExists == false) {
@@ -427,9 +432,7 @@
                         ).append(groupName + " <br>")
                     );
                     groupCount++;
-                    // remove style display:none
-                    $("#groupMsgAccess").removeAttr("style");
-  
+                   
                 }
                 else if (connectionId === connectionId_) {
                     $("#noMoreGroupWarning").html("This group name is taken!");
@@ -471,16 +474,16 @@
                         $("#showGroupMessages").empty();
                         // if user not in that group
                         if(selectedBtn.parent().hasClass("btn-secondary")) {
-                            $("#groupMsgAccess").css("display", "none");
+                            $("#groupMsgAccess").css("display", "none"); // hide chat box          
+                            $("#btnJoinGroup").removeAttr("style"); // show join group button
                         }
                         else{ // if user is also in that group
-                            //$("#btnJoinGroup").css("display", "none");
+                            $("#groupMsgAccess").removeAttr("style"); // show chat box
+                            $("#btnJoinGroup").css("display", "none"); // hide join button
                             // get previous messages from server
                             $("#currentGroupName").html("Group " + selectedBtn.val() + " Chat:");
                             connection.invoke("GetPrevGroupMsgs", selectedBtn.val()).catch(error => console.log(`Error occured while loading previous group messages. ${error}`)); 
 
-                            // remove style display:none
-                            $("#groupMsgAccess").removeAttr("style"); 
                         }
                     }
                     currentGroupName = selectedBtn.val();
