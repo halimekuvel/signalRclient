@@ -261,7 +261,7 @@
                 $("#txtMessageGroup").val("");
                 $("#txtMessageGroup").removeClass("is-invalid");
                 // send to group chosen with radio buttons
-                connection.invoke("SendMessageToGroupAsync", message, $("input[name=group]:checked").val()).catch(error => console.log(`Error occured while sending a group message. ${error}`));
+                connection.invoke("SendMessageToGroupAsync", message, currentGroupName).catch(error => console.log(`Error occured while sending a group message. ${error}`));
             });
             // enter key to send the message
             $("#txtMessageGroup").keypress(function(e) {
@@ -274,7 +274,7 @@
             connection.on("receiveGroupMessage", resp => {
                 let response = JSON.parse(resp);
 
-                if(response.groupName == $("input[name=group]:checked").val()) // print the message
+                if(response.groupName == currentGroupName) // print the message
                     printGroupMessage(response);
                 else { // notification
 
