@@ -489,9 +489,7 @@
 
             connection.on("receivePrevGroupMsgs", messages => {
                 let messages_ = JSON.parse(messages);
-                console.log(messages_);
                 $.each(messages_, (index, item) => {
-                    console.log(item);
                     receiveGrpMsg(item);
                 });
 
