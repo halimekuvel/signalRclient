@@ -261,6 +261,11 @@
             // receive message for the selectGoups
             connection.on("receiveGroupMessage", resp => {
                 let response = JSON.parse(resp);
+                receiveGrpMsg(response);
+                
+            });
+
+            function receiveGrpMsg(response) {
                 if(response.groupName == $("input[name=group]:checked").val()) {
                     floatType = "";
                     classType = "";
@@ -275,8 +280,7 @@
                     let nameAndMsg = "<span class=\"badge badge-" + classType + " float-" + floatType + "\">" + "<strong>" + response.sender + " : </strong>" + response.message + "</span><br><br>";
                     $("#showGroupMessages").append(nameAndMsg);
                 }
-                
-            });
+            }
 
             // write the connectionId of the client
             connection.on("getConnectionId", connectionId => {
@@ -470,12 +474,13 @@
                             $("#groupMsgAccess").css("display", "none");
                         }
                         else{ // if user is also in that group
+                            //$("#btnJoinGroup").css("display", "none");
                             // get previous messages from server
                             $("#currentGroupName").html("Group " + selectedBtn.val() + " Chat:");
                             connection.invoke("GetPrevGroupMsgs", selectedBtn.val()).catch(error => console.log(`Error occured while loading previous group messages. ${error}`)); 
 
                             // remove style display:none
-                            //$("#groupMsgAccess").removeAttr("style"); 
+                            $("#groupMsgAccess").removeAttr("style"); 
                         }
                     }
                     currentGroupName = selectedBtn.val();
@@ -484,10 +489,10 @@
 
             connection.on("receivePrevGroupMsgs", messages => {
                 let messages_ = JSON.parse(messages);
-                debugger
+                console.log(messages_);
                 $.each(messages_, (index, item) => {
-                    console.log(`${item}`);
-                    connection.invoke("receiveGroupMessage",  `${item}`);
+                    console.log(item);
+                    receiveGrpMsg(item);
                 });
 
 
