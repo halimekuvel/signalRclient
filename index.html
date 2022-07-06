@@ -82,20 +82,48 @@
                           <input type="radio" name="group" id="option3" autocomplete="off" value="C"> C
                         </label> -->
                 </div>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" id= "modalButton" data-toggle="modal" data-target="#modalGroupChat" style="display: none;">
+                  Open Chat
+                </button>
+                
+                <!-- Modal -->
+                <div class="modal fade" id="modalGroupChat" tabindex="-1" role="dialog" aria-labelledby="currentGroupName" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="currentGroupName">Chat Box</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        
+                        <div id="groupMsgAccess" style="display:none;">
+                            <div id="currentGroupInfo"></div>
+                            <div id="currentGroupName"></div>
+                            <br>
+                            <input type="text" id="txtMessageGroup" class="form-control" placeholder="Message">
+                            <br>
+                            <button id="btnSendGroup" class="btn btn-primary mt-1">Send</button>
+                            <br><br>
+                            <div class="container overflow-auto">
+                                <div id="showGroupMessages"></div>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <button id="btnJoinGroup" class="btn btn-primary mt-2" disabled>Join Group</button>
                 <br><br>
-                <div id="groupMsgAccess" style="display:none;">
-                    <div id="currentGroupInfo"></div>
-                    <div id="currentGroupName"></div>
-                    <br>
-                    <input type="text" id="txtMessageGroup" class="form-control" placeholder="Message">
-                    <br>
-                    <button id="btnSendGroup" class="btn btn-primary mt-1">Send</button>
-                    <br><br>
-                    <div class="container overflow-auto">
-                        <div id="showGroupMessages"></div>
-                    </div>
-                </div>
+                <button id="btnLeaveGroup" class="btn btn-primary mt-2" disabled>Leave Group</button>
+                <br><br>
+
+
             </div>
 
         </div>
@@ -296,6 +324,13 @@
                 $("#groupMsgAccess").removeAttr("style");
                 $("#btnJoinGroup").css("display", "none"); // hide join button
             });
+            $("btnLeaveGroup").click(() => {
+                connection.invoke("LeaveGroup", connectionId_, currentGroupName).catch(error => console.log(`Error occured while leaving a group. ${error}`));
+                // add style display:none
+                $("#groupMsgAccess").removeAttr("style");
+                $("#btnLeaveGroup").css("display", "none"); 
+            });
+            
 
 
             connection.on("checkJoinGroup", (groupResponse) => {
@@ -310,7 +345,6 @@
                     });
                     $("#currentGroupName").html("Group " + currentGroupName + " Chat:");
                     // change button color 
-                   //$(".chosenGroup label[class='btn btn-secondary active']").attr("class", " btn btn-success active");
                    $(".chosenGroup .active").attr("class", "btn btn-success active")
 
                 }
@@ -342,7 +376,7 @@
                 if ($("#groupName").val() == "") {
                     $("#groupName").addClass("is-invalid");
                     setTimeout(() => {
-                        alert("group name is required!");
+                        alert("Group name is required!");
                     }, 200);
                 }
                 else {
@@ -412,6 +446,7 @@
 
                     $("#groupMsgAccess").removeAttr("style"); // show group chat box
                     $("#btnJoinGroup").css("display", "none"); // hide join button
+                    $("#btnLeaveGroup").css("display", "none");
                 }
                 else
                     className =  "btn btn-secondary ml-1 mb-1";
@@ -421,6 +456,7 @@
                             class: className,
                             style: "overflow: hidden;text-overflow: ellipsis;max-width: 100%;",
                             id: groupName
+
                         }).append(
                             $("<input>").prop({
                                 type: "radio",
@@ -449,6 +485,7 @@
                 $("#groupName").removeClass("is-invalid");
             });
 
+
             // add username
             $("#confirmUserName").click(() => {
                 let userName = $("#userName").val();
@@ -476,15 +513,28 @@
                         if(selectedBtn.parent().hasClass("btn-secondary")) {
                             $("#groupMsgAccess").css("display", "none"); // hide chat box          
                             $("#btnJoinGroup").removeAttr("style"); // show join group button
+                            $("#btnLeaveGroup").removeAttr("style");
+
                         }
                         else{ // if user is also in that group
                             $("#groupMsgAccess").removeAttr("style"); // show chat box
+                            // $("#modalGroupChat").removeAttr("style"); 
+                            // $("#modalGroupChat").removeAttr("hidden"); 
+                            // $("#modalGroupChat").css("display", "block");
+                            // $("#modalGroupChat").attr("class", "modal fade show");
                             $("#btnJoinGroup").css("display", "none"); // hide join button
+                            $("#modalButton").click();
+
+
                             // get previous messages from server
                             $("#currentGroupName").html("Group " + selectedBtn.val() + " Chat:");
                             connection.invoke("GetPrevGroupMsgs", selectedBtn.val()).catch(error => console.log(`Error occured while loading previous group messages. ${error}`)); 
 
                         }
+
+                    }
+                    else {
+                        $("#modalButton").click();
                     }
                     currentGroupName = selectedBtn.val();
                 }, 1)
@@ -506,6 +556,7 @@
                     $("#confirmUserName").prop("disabled", true);
                     $("#btnSend").prop("disabled", false);
                     $("#btnJoinGroup").prop("disabled", false);
+                    $("#btnLeaveGroup").prop("disabled", false);
                     $("#btnAddGroup").prop("disabled", false);
                     return true;   
                 }
