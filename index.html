@@ -290,6 +290,10 @@
                         timer: 3500,
                         width: '20em'
                     })
+
+                    if(!$(".chosenGroup #" + response.groupName).hasClass(".bi"))
+                        $(".chosenGroup #" + response.groupName).append('  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16"><path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/></svg>');
+                    
                 }
             });
           
@@ -348,8 +352,10 @@
                         }, 2000)
                     });
                     $("#currentGroupName").html("Group " + currentGroupName + " Chat:");
-                    // change button color 
-                   $(".chosenGroup .active").attr("class", "btn btn-success active");
+                    // change button color, deactivate and uncheck the group button
+                    $(".chosenGroup .active").attr("class", "btn btn-success");
+                    $("input[name=group]:checked").prop( "checked", false);
+                    currentGroupName = '';
 
                 }
                 else { // user already in group
@@ -455,7 +461,7 @@
                                 autocomplete: "off",
                                 value: grpName
                             })
-                        ).append(grpName + " <br>")
+                        ).append(grpName)
                     );
                 });
             });
@@ -480,6 +486,9 @@
 
                     $("#groupMsgAccess").removeAttr("style"); // show group chat box
                     $("#btnJoinGroup").css("display", "none"); // hide join button
+                    // deactivate and uncheck the group button
+                    $(".chosenGroup .active").attr("class", "btn btn-success");
+                    $("input[name=group]:checked").prop( "checked", false);
                 }
                 else
                     className =  "btn btn-secondary ml-1 mb-1";
@@ -498,7 +507,7 @@
                                 value: groupName,
                                 checked: true
                             })
-                        ).append(groupName + " <br>")
+                        ).append(groupName)
                     );
                     groupCount++;
                    
@@ -530,6 +539,7 @@
                 else{
                     $(".chosenGroup .active").attr("class", "btn btn-success");
                     $("input[name=group]:checked").prop( "checked", false );
+                    currentGroupName = '';
                 }
                
             });
@@ -555,7 +565,11 @@
             document.querySelector('.chosenGroup').addEventListener('click',() => {
                 setTimeout(()=>{
                     let selectedBtn = $(".chosenGroup label input[name='group']:checked");
-                    
+
+                    // if other than a button selected return
+                    if(selectedBtn.val() == null)
+                        return;
+       
                     // if a different group has been selected
                     if(selectedBtn.val() != currentGroupName) {
                         $("#showGroupMessages").empty();
@@ -568,11 +582,14 @@
                         }
                         else{ // if user is also in that group
                             $("#groupMsgAccess").removeAttr("style"); // show chat box
-                            $("#btnJoinGroup").css("display", "none");
+                            $("#btnJoinGroup").css("display", "none"); // hide join button
                             $("#btnLeaveGroup").removeAttr("style");
-                         // hide join button
+                            
+                            // open modal chat box
                             $("#modalButton").click();
 
+                            // remove notification bell if there were any notifications
+                            $(".chosenGroup #" + selectedBtn.val() + " .bi").remove();
 
                             // get previous messages from server
                             $("#currentGroupName").html("Group " + selectedBtn.val() + " Chat:");
@@ -594,6 +611,7 @@
                             $("#btnJoinGroup").removeAttr("style"); // show join group button
                         }
                     }
+                    // update currentGroupName value
                     currentGroupName = selectedBtn.val();
                 }, 1)
             });
