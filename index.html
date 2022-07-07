@@ -78,12 +78,14 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <h5 class="modal-title" id="currentGroupName">Chat Box</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeGroupModal">
+                        <button type="button" class="btn btn-primary mt-1" data-dismiss="modal" aria-label="Close" id="btnLeaveGroup">
+                            Leave Group
+                            </button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
-                        </button>
+
                       </div>
                       <div class="modal-body">
-                        <button id="btnLeaveGroup" class="btn btn-primary mt-2" disabled>Leave Group</button>
                         <div id="groupMsgAccess" style="display:none;">
                             <div id="currentGroupInfo"></div>
                             <div id="currentGroupName"></div>
@@ -323,17 +325,16 @@
                 $("#btnJoinGroup").css("display", "none"); // hide join button
             });
             $("#btnLeaveGroup").click(() => {
+                
                 connection.invoke("LeaveGroup", connectionId_, currentGroupName).catch(error => console.log(`Error occured while leaving a group. ${error}`));
                 // add style display:none
                 $("#groupMsgAccess").attr("style", "display:none");
-                $("#btnJoinGroup").css("display", "block"); 
                 $("#btnLeaveGroup").css("display", "none"); // hide leave button
                 // click leavegroup button activate the close group modal button 
                 $("#closeGroupModal").click();
             });
 
-            
-            
+
 
 
             connection.on("checkJoinGroup", (groupResponse) => {
@@ -360,32 +361,26 @@
                     });
                 }
             });
+            
+
+
+
             let flag = 0;
             connection.on("checkLeaveGroup", (groupResponse) => {
-                // document.querySelector('#' + id).attr("class", "btn btn-secondary active"); 
-                // $('#modalGroupChat').on('hidden.bs.modal', function () {
-                //     document.querySelector('.chosenGroup .btn').style.backgroundColor = "red";
-                //  })
-
-
-
+                
                 groupResponse_ = JSON.parse(groupResponse);
-                console.log(groupResponse_.ClienInGroup);
                 // user left
                 if(groupResponse_.ClienInGroup) {
-                    debugger
+                    flag = 1;
                     $("#currentGroupInfo").html("You left Group " + currentGroupName + " Chat!");
                     $("#currentGroupInfo").fadeIn(2000, () => {
                         setTimeout(() => {
                             $("#currentGroupInfo").fadeOut(2000);
                         }, 2000)
                     });
-                    flag=1;
-
                     $("#currentGroupName").html("Group " + currentGroupName + " Chat:");
-                    $("#closeGroupModal").click();
-                    //$(".chosenGroup .active").attr("class", "btn btn-secondary active");  
-                  
+                    // change button color 
+                   $(".chosenGroup .active").attr("class", "btn btn-secondary active");
 
                 }
                 else { // user already in group
@@ -396,8 +391,7 @@
                         }, 2000)
                     });
                 }
-            }
-            );
+            });
 
             connection.on("notificationJoinGroup", userName => {
                 // user joined
@@ -526,8 +520,10 @@
 
             // after closing the group chat modal deactivate and uncheck the group button
             $("#closeGroupModal").click(() => {
+
                 
                 if(flag == 1) {
+                    flag = 0;
                     
                     $(".chosenGroup .active").attr("class", "btn btn-secondary active");
                 }
@@ -559,6 +555,7 @@
             document.querySelector('.chosenGroup').addEventListener('click',() => {
                 setTimeout(()=>{
                     let selectedBtn = $(".chosenGroup label input[name='group']:checked");
+                    
                     // if a different group has been selected
                     if(selectedBtn.val() != currentGroupName) {
                         $("#showGroupMessages").empty();
