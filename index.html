@@ -472,7 +472,6 @@
 
         connection.on("notificationJoinGroup", (userName) => {
           // user joined
-          if (userName != localStorage.getItem("userName_")) {
             $("#currentGroupInfo").html(
               userName + " joined Group " + currentGroupName + " Chat!"
             );
@@ -481,7 +480,6 @@
                 $("#currentGroupInfo").fadeOut(2000);
               }, 2000);
             });
-          }
         });
 
         $("#btnAddGroup").click(() => {
