@@ -4,25 +4,19 @@
 <head>
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-    <script src="signalr.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.20/sweetalert2.css" referrerpolicy="no-referrer" />
 
     <title>Let's chat!</title>
 </head>
+<style>
+    .overflow2-auto{
+	height: 350px;
+	overflow-y: scroll;
+    }
+</style>
 
 <body>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <div class="alert alert-info" role="alert" id="status" style="display: none;"></div>
 
@@ -51,7 +45,7 @@
                 <br>
                 <button id="btnSend" class="btn btn-primary mt-1" disabled>Send</button>
                 <br><br>
-                <div class="container overflow-auto">
+                <div class="container overflow2-auto">
                     <div id="showMessages"></div>
                 </div>
             </div>
@@ -72,35 +66,57 @@
                 <br><br>
                 <div class="btn-group btn-group-toggle chosenGroup table" style="max-width: 100%; display: block;"
                     data-toggle="buttons" id="selectGroup">
-                    <!-- <label class="btn btn-secondary">
-                          <input type="radio" name="group" id="option1" autocomplete="off" value="A"> A
-                        </label>
-                        <label class="btn btn-secondary">
-                          <input type="radio" name="group" id="option2" autocomplete="off" value="B"> B
-                        </label>
-                        <label class="btn btn-secondary">
-                          <input type="radio" name="group" id="option3" autocomplete="off" value="C"> C
-                        </label> -->
+                </div>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" id= "modalButton" data-toggle="modal" data-target="#modalGroupChat" style="display: none;">
+                  Open Chat
+                </button>
+                
+                <!-- Modal -->
+                <div class="modal fade" id="modalGroupChat" tabindex="-1" role="dialog" aria-labelledby="currentGroupName" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="currentGroupName">Chat Box</h5> 
+ 
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+
+                      </div>
+                      <div class="modal-body">
+                        <div id="groupMsgAccess" style="display:none;">
+                            <button type="button" class="btn btn-primary mt-1" data-dismiss="modal" aria-label="Close" id="btnLeaveGroup">
+                                Leave Group
+                                </button>
+                            <div id="currentGroupInfo"></div>
+                            <div id="currentGroupName"></div>
+                            <div class="container overflow2-auto">
+                                <div id="showGroupMessages"></div>
+                            </div>
+                        </div>
+                      </div>
+                      <input type="text" id="txtMessageGroup" class="form-control" placeholder="Message">
+                      <br>
+                      <button id="btnSendGroup" class="btn btn-primary mt-1">Send</button>
+                    </div>
+                  </div>
                 </div>
                 <button id="btnJoinGroup" class="btn btn-primary mt-2" disabled>Join Group</button>
                 <br><br>
-                <div id="groupMsgAccess" style="display:none;">
-                    <div id="currentGroupInfo"></div>
-                    <br>
-                    <input type="text" id="txtMessageGroup" class="form-control" placeholder="Message">
-                    <br>
-                    <button id="btnSendGroup" class="btn btn-primary mt-1">Send</button>
-                    <br><br>
-                    <div class="container overflow-auto">
-                        <div id="showGroupMessages"></div>
-                    </div>
-                </div>
+                <br><br>
+
+
             </div>
 
         </div>
     </div>
-
-    </div>
+    <script src="signalr.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.20/sweetalert2.js" referrerpolicy="no-referrer"></script>
     <script>
         // determine the hub that the client will connect to with webSocket
         $(document).ready(() => {
@@ -248,7 +264,7 @@
                 $("#txtMessageGroup").val("");
                 $("#txtMessageGroup").removeClass("is-invalid");
                 // send to group chosen with radio buttons
-                connection.invoke("SendMessageToGroupAsync", message, $("input[name=group]:checked").val()).catch(error => console.log(`Error occured while sending a group message. ${error}`));
+                connection.invoke("SendMessageToGroupAsync", message, currentGroupName).catch(error => console.log(`Error occured while sending a group message. ${error}`));
             });
             // enter key to send the message
             $("#txtMessageGroup").keypress(function(e) {
@@ -259,7 +275,30 @@
 
             // receive message for the selectGoups
             connection.on("receiveGroupMessage", resp => {
-                response = JSON.parse(resp);
+                let response = JSON.parse(resp);
+
+                if(response.groupName == currentGroupName) // print the message
+                    printGroupMessage(response);
+                else { // notification
+
+                    Swal.fire({
+                        position: 'bottom-end',
+                        title: 'Group ' + response.groupName,
+                        text: response.sender + ': ' + response.message,
+                        backdrop:false,
+                        showConfirmButton: true,
+                        timer: 3500,
+                        width: '20em'
+                    })
+
+                    if(!$(".chosenGroup #" + response.groupName).hasClass(".bi"))
+                        $(".chosenGroup #" + response.groupName).append('  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16"><path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/></svg>');
+                    
+                }
+            });
+          
+
+            function printGroupMessage(response) {
                 if(response.groupName == $("input[name=group]:checked").val()) {
                     floatType = "";
                     classType = "";
@@ -274,8 +313,7 @@
                     let nameAndMsg = "<span class=\"badge badge-" + classType + " float-" + floatType + "\">" + "<strong>" + response.sender + " : </strong>" + response.message + "</span><br><br>";
                     $("#showGroupMessages").append(nameAndMsg);
                 }
-                
-            });
+            }
 
             // write the connectionId of the client
             connection.on("getConnectionId", connectionId => {
@@ -289,22 +327,35 @@
                 connection.invoke("JoinGroup", connectionId_, currentGroupName).catch(error => console.log(`Error occured while joining a group. ${error}`));
                 // remove style display:none
                 $("#groupMsgAccess").removeAttr("style");
+                $("#btnJoinGroup").css("display", "none"); // hide join button
+            });
+            $("#btnLeaveGroup").click(() => {
+                
+                connection.invoke("LeaveGroup", connectionId_, currentGroupName).catch(error => console.log(`Error occured while leaving a group. ${error}`));
+                // add style display:none
+                $("#groupMsgAccess").attr("style", "display:none");
+                // click leavegroup button activate the close group modal button 
+                $("#closeGroupModal").click();
             });
 
 
+
+
             connection.on("checkJoinGroup", (groupResponse) => {
+                groupResponse_ = JSON.parse(groupResponse);
                 // user joined
-                if(!groupResponse.clienInGroup) {
+                if(groupResponse_.ClienInGroup) {
                     $("#currentGroupInfo").html("You joined Group " + currentGroupName + " Chat!");
                     $("#currentGroupInfo").fadeIn(2000, () => {
                         setTimeout(() => {
                             $("#currentGroupInfo").fadeOut(2000);
                         }, 2000)
                     });
-
-                    // change button color 
-                    $(".chosenGroup label[class='btn btn-secondary active']").attr("class", " btn btn-success active");
-                    
+                    $("#currentGroupName").html("Group " + currentGroupName + " Chat:");
+                    // change button color, deactivate and uncheck the group button
+                    $(".chosenGroup .active").attr("class", "btn btn-success");
+                    $("input[name=group]:checked").prop( "checked", false);
+                    currentGroupName = '';
 
                 }
                 else { // user already in group
@@ -316,18 +367,48 @@
                     });
                 }
             });
+            
 
-            connection.on("notificationJoinGroup", userName => {
-                // user joined
-                if(!alreadyInGroup) {
-                    $("#currentGroupInfo").html("+" + userName + " joined Group " + currentGroupName + " Chat!");
+
+
+            let flag = 0;
+            connection.on("checkLeaveGroup", (groupResponse) => {
+                
+                groupResponse_ = JSON.parse(groupResponse);
+                // user left
+                if(groupResponse_.ClienInGroup) {
+                    flag = 1;
+                    $("#currentGroupInfo").html("You left Group " + currentGroupName + " Chat!");
+                    $("#currentGroupInfo").fadeIn(2000, () => {
+                        setTimeout(() => {
+                            $("#currentGroupInfo").fadeOut(2000);
+                        }, 2000)
+                    });
+                    $("#currentGroupName").html("Group " + currentGroupName + " Chat:");
+                    // change button color 
+                   $(".chosenGroup .active").attr("class", "btn btn-secondary active");
+
+                }
+                else { // user already in group
+                    $("#currentGroupInfo").html("You have already left Group " + currentGroupName + " Chat!");
                     $("#currentGroupInfo").fadeIn(2000, () => {
                         setTimeout(() => {
                             $("#currentGroupInfo").fadeOut(2000);
                         }, 2000)
                     });
                 }
-            
+            });
+
+            connection.on("notificationJoinGroup", userName => {
+                // user joined
+                if(userName != localStorage.getItem("userName_")) {
+                    $("#currentGroupInfo").html(userName + " joined Group " + currentGroupName + " Chat!");
+                    $("#currentGroupInfo").fadeIn(2000, () => {
+                        setTimeout(() => {
+                            $("#currentGroupInfo").fadeOut(2000);
+                        }, 2000)
+                    });
+                }            
                 
             });
 
@@ -335,7 +416,7 @@
                 if ($("#groupName").val() == "") {
                     $("#groupName").addClass("is-invalid");
                     setTimeout(() => {
-                        alert("group name is required!");
+                        alert("Group name is required!");
                     }, 200);
                 }
                 else {
@@ -380,7 +461,7 @@
                                 autocomplete: "off",
                                 value: grpName
                             })
-                        ).append(grpName + " <br>")
+                        ).append(grpName)
                     );
                 });
             });
@@ -400,8 +481,15 @@
             // add a new group to radio button if it doesn't already exist
             connection.on("checkAddGroup", (groupAlreadyExists, groupName, connectionId) => {
                 className = "";
-                if(connectionId == connectionId_)
+                if(connectionId == connectionId_){
                     className =  "btn btn-success ml-1 mb-1";
+
+                    $("#groupMsgAccess").removeAttr("style"); // show group chat box
+                    $("#btnJoinGroup").css("display", "none"); // hide join button
+                    // deactivate and uncheck the group button
+                    $(".chosenGroup .active").attr("class", "btn btn-success");
+                    $("input[name=group]:checked").prop( "checked", false);
+                }
                 else
                     className =  "btn btn-secondary ml-1 mb-1";
                 if (groupAlreadyExists == false) {
@@ -410,6 +498,7 @@
                             class: className,
                             style: "overflow: hidden;text-overflow: ellipsis;max-width: 100%;",
                             id: groupName
+
                         }).append(
                             $("<input>").prop({
                                 type: "radio",
@@ -418,12 +507,10 @@
                                 value: groupName,
                                 checked: true
                             })
-                        ).append(groupName + " <br>")
+                        ).append(groupName)
                     );
                     groupCount++;
-                    // remove style display:none
-                    $("#groupMsgAccess").removeAttr("style");
-  
+                   
                 }
                 else if (connectionId === connectionId_) {
                     $("#noMoreGroupWarning").html("This group name is taken!");
@@ -439,6 +526,24 @@
             $("#groupName").click(() => {
                 $("#groupName").removeClass("is-invalid");
             });
+
+            // after closing the group chat modal deactivate and uncheck the group button
+            $("#closeGroupModal").click(() => {
+
+                
+                if(flag == 1) {
+                    flag = 0;
+                    
+                    $(".chosenGroup .active").attr("class", "btn btn-secondary active");
+                }
+                else{
+                    $(".chosenGroup .active").attr("class", "btn btn-success");
+                    $("input[name=group]:checked").prop( "checked", false );
+                    currentGroupName = '';
+                }
+               
+            });
+
 
             // add username
             $("#confirmUserName").click(() => {
@@ -460,20 +565,65 @@
             document.querySelector('.chosenGroup').addEventListener('click',() => {
                 setTimeout(()=>{
                     let selectedBtn = $(".chosenGroup label input[name='group']:checked");
+
+                    // if other than a button selected return
+                    if(selectedBtn.val() == null)
+                        return;
+       
+                    // if a different group has been selected
                     if(selectedBtn.val() != currentGroupName) {
                         $("#showGroupMessages").empty();
+                        // if user not in that group
                         if(selectedBtn.parent().hasClass("btn-secondary")) {
-                            $("#groupMsgAccess").css("display", "none");
+                            $("#groupMsgAccess").css("display", "none"); // hide chat box          
+                            $("#btnJoinGroup").removeAttr("style"); // show join group button
+                            
+
                         }
-                        else{
-                            // remove style display:none
-                            $("#groupMsgAccess").removeAttr("style");
+                        else{ // if user is also in that group
+                            $("#groupMsgAccess").removeAttr("style"); // show chat box
+                            $("#btnJoinGroup").css("display", "none"); // hide join button
+                            $("#btnLeaveGroup").removeAttr("style");
+                            
+                            // open modal chat box
+                            $("#modalButton").click();
+
+                            // remove notification bell if there were any notifications
+                            $(".chosenGroup #" + selectedBtn.val() + " .bi").remove();
+
+                            // get previous messages from server
+                            $("#currentGroupName").html("Group " + selectedBtn.val() + " Chat:");
+                            connection.invoke("GetPrevGroupMsgs", selectedBtn.val()).catch(error => console.log(`Error occured while loading previous group messages. ${error}`)); 
+
+                        }
+
+                    }
+                    else {
+                        if(!selectedBtn.parent().hasClass("btn-secondary")) {
+                            
+                            $("#modalButton").click();
+
+                            
+
+                        }
+                        else {
+                            $("#groupMsgAccess").css("display", "none"); // hide chat box          
+                            $("#btnJoinGroup").removeAttr("style"); // show join group button
                         }
                     }
+                    // update currentGroupName value
                     currentGroupName = selectedBtn.val();
                 }, 1)
             });
 
+            connection.on("receivePrevGroupMsgs", messages => {
+                let messages_ = JSON.parse(messages);
+                $.each(messages_, (index, item) => {
+                    printGroupMessage(item);
+                });
+
+
+            });
 
 
             function configureLoginFields(userName) {
@@ -482,6 +632,7 @@
                     $("#confirmUserName").prop("disabled", true);
                     $("#btnSend").prop("disabled", false);
                     $("#btnJoinGroup").prop("disabled", false);
+                    $("#btnLeaveGroup").prop("disabled", false);
                     $("#btnAddGroup").prop("disabled", false);
                     return true;   
                 }
@@ -490,8 +641,4 @@
         }); 
     </script>
 </body>
-<footer>
-    <script src="jquery.min.js"></script>
-</footer>
-
 </html>
