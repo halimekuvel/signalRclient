@@ -246,13 +246,13 @@
 
         // server will notify the clients through this event when a user joined
         connection.on("userJoined", (connectionName) => {
-          status.removeClass(currAlertClass);
-          status.addClass("alert alert-success");
-          currAlertClass = "alert alert-success";
-          if (configureLoginFields(connectionName)) {
-            status.html(`${connectionName} joined.`);
-            animation();
-          }
+          
+          $("#helloUser").html("Hi " + connectionName + "!");
+          $("#confirmUserName").prop("disabled", true);
+          $("#btnSend").prop("disabled", false);
+          $("#btnLeaveGroup").prop("disabled", false);
+          $("#btnAddGroup").prop("disabled", false);
+          
           // After login, username text should be disabled
           $("#userName").prop("disabled", true);
         });
@@ -268,7 +268,14 @@
         });
 
         // write the online clients list to the screen
-        connection.on("clients", (userNames) => {
+        connection.on("clients", (userNames, joinedUserName) => {
+          // alert users that a user joined
+          status.removeClass(currAlertClass);
+          status.addClass("alert alert-success");
+          currAlertClass = "alert alert-success";
+          status.html(`${joinedUserName} joined.`);
+          animation();
+
           let userNamesTxt = "";
           $.each(userNames, (index, item) => {
             userNamesTxt += `<li class="list-group-item">${item}</li>`;
@@ -546,11 +553,16 @@
         });
         connection.on("checkUserName", (userName) => {
           $("#userName").addClass("is-invalid");
+          let message = "";
+          if(userName != "") {
+            message = "This username already taken! Please enter another username.";
+          }
+          else {
+            message = "Invalid username! Try again.";
+          }
           setTimeout(() => {
-            alert(
-              "This username already taken! Please enter another username."
-            );
-          }, 200);
+              alert(message);
+            }, 200);
           setTimeout(() => {
             $("#userName").removeClass("is-invalid");
           }, 200);
@@ -698,17 +710,6 @@
           });
         });
 
-        function configureLoginFields(userName) {
-          if (userName) {
-            $("#helloUser").html("Hi " + userName + "!");
-            $("#confirmUserName").prop("disabled", true);
-            $("#btnSend").prop("disabled", false);
-            $("#btnLeaveGroup").prop("disabled", false);
-            $("#btnAddGroup").prop("disabled", false);
-            return true;
-          }
-          return false;
-        }
       });
     </script>
   </body>
