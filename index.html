@@ -245,14 +245,14 @@
         });
 
         // server will notify the clients through this event when a user joined
-        connection.on("userJoined", (connectionName) => {
+        connection.on("userJoined", (userName) => {
           
-          $("#helloUser").html("Hi " + connectionName + "!");
+          $("#helloUser").html("Hi " + userName + "!");
           $("#confirmUserName").prop("disabled", true);
           $("#btnSend").prop("disabled", false);
           $("#btnLeaveGroup").prop("disabled", false);
           $("#btnAddGroup").prop("disabled", false);
-          $("#selectGroup").css("display", "block"); // hide join button
+          $("#selectGroup").css("display", "block"); 
 
           // After login, username text should be disabled
           $("#userName").prop("disabled", true);
@@ -268,8 +268,7 @@
           animation();
         });
 
-        // write the online clients list to the screen
-        connection.on("clients", (userNames, joinedUserName) => {
+        connection.on("notifyUserJoined", (joinedUserName) => {
           // alert users that a user joined
           status.removeClass(currAlertClass);
           status.addClass("alert alert-success");
@@ -277,6 +276,10 @@
           status.html(`${joinedUserName} joined.`);
           animation();
 
+        });
+
+        // write the online clients list to the screen
+        connection.on("clients", (userNames) => {
           let userNamesTxt = "";
           $.each(userNames, (index, item) => {
             userNamesTxt += `<li class="list-group-item">${item}</li>`;
