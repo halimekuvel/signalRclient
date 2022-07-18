@@ -167,7 +167,7 @@
               </div>
             </div>
           </div>
-          <button id="btnJoinGroup" class="btn btn-primary mt-2" disabled>
+          <button id="btnJoinGroup" class="btn btn-primary mt-2" style="display: none">
             Join Group
           </button>
           <br /><br />
@@ -307,6 +307,7 @@
 
         // take the message that have been send from the server with the RPC system
         connection.on("receiveMessage", (message, connectionId, userName) => {
+          console.log(userName)
           floatType = "";
           classType = "";
           userNameText = "";
@@ -466,8 +467,8 @@
             });
           }
         });
-        connection.on("checkLeaveGroup", () => {
-          $(".chosenGroup .active").attr("class", "btn btn-secondary active");
+        connection.on("checkLeaveGroup", (groupName) => {
+          $(".chosenGroup #" + groupName).attr("class", "btn btn-secondary");
         });
 
         connection.on("notificationJoinGroup", (userName) => {
@@ -702,7 +703,6 @@
             $("#helloUser").html("Hi " + userName + "!");
             $("#confirmUserName").prop("disabled", true);
             $("#btnSend").prop("disabled", false);
-            $("#btnJoinGroup").prop("disabled", false);
             $("#btnLeaveGroup").prop("disabled", false);
             $("#btnAddGroup").prop("disabled", false);
             return true;
