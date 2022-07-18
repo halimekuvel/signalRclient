@@ -17,7 +17,7 @@
   <style>
     .overflow2-auto {
       height: 350px;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
   </style>
 
@@ -68,7 +68,7 @@
             Send
           </button>
           <br /><br />
-          <div class="container overflow2-auto">
+          <div class="container overflow2-auto" id="showMessagesCnt">
             <div id="showMessages"></div>
           </div>
         </div>
@@ -149,7 +149,7 @@
                     </button>
                     <div id="currentGroupInfo"></div>
                     <div id="currentGroupName"></div>
-                    <div class="container overflow2-auto">
+                    <div class="container overflow2-auto" id="showGroupMessagesCnt">
                       <div id="showGroupMessages"></div>
                     </div>
                   </div>
@@ -339,6 +339,8 @@
             "</div></span><br><br>";
 
           $("#showMessages").append(nameAndMsg);
+          var scrollObj = document.getElementById("showMessagesCnt");
+          scrollObj.scrollTop = scrollObj.scrollHeight;
         });
 
         $("#btnSendGroup").click(() => {
@@ -412,6 +414,8 @@
               response.message +
               "</span><br><br>";
             $("#showGroupMessages").append(nameAndMsg);
+            var scrollObj = document.getElementById("showGroupMessagesCnt");
+            scrollObj.scrollTop = scrollObj.scrollHeight;
           }
         }
 
