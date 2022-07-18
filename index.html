@@ -96,7 +96,7 @@
           <br /><br />
           <div
             class="btn-group btn-group-toggle chosenGroup table"
-            style="max-width: 100%; display: block"
+            style="max-width: 100%; display: none"
             data-toggle="buttons"
             id="selectGroup"
           ></div>
@@ -252,7 +252,8 @@
           $("#btnSend").prop("disabled", false);
           $("#btnLeaveGroup").prop("disabled", false);
           $("#btnAddGroup").prop("disabled", false);
-          
+          $("#selectGroup").css("display", "block"); // hide join button
+
           // After login, username text should be disabled
           $("#userName").prop("disabled", true);
         });
