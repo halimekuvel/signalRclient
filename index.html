@@ -19,6 +19,14 @@
       height: 350px;
       overflow-y: auto;
     }
+    .swal-model {
+      height: 10vh;
+      
+      font-size: 10px;
+      /* box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.21);
+      margin-bottom: 28px; */
+
+    }
   </style>
 
   <body>
@@ -217,31 +225,62 @@
         currAlertClass = "alert alert-info"; // holds the current alert's class
         // this event awakes while trying to reconnect to the server
         connection.onreconnecting((error) => {
-          // status.css("background-color", "blue");
-          // status.css("color", "white");
-          status.removeClass(currAlertClass);
-          status.addClass("alert alert-warning");
-          currAlertClass = "alert alert-warning";
-          status.html("Connecting...");
-          animation();
+          // status.removeClass(currAlertClass);
+          // status.addClass("alert alert-warning");
+          // currAlertClass = "alert alert-warning";
+          // status.html("Connecting...");
+          // animation();
+
+          Swal.fire({
+            position: "center",
+            title: "Connecting...",
+            color: '#716add',
+            backdrop: false,
+            showConfirmButton: false,
+            timer: 3500,
+            width: "25em",
+            customClass: 'swal-model'
+          });
         });
 
         // this event awakes when reconnected to the server
         connection.onreconnected((connectionId) => {
-          status.removeClass(currAlertClass);
-          status.addClass("alert alert-success");
-          currAlertClass = "alert alert-success";
-          status.html("Connected!");
-          animation();
+          // status.removeClass(currAlertClass);
+          // status.addClass("alert alert-success");
+          // currAlertClass = "alert alert-success";
+          // status.html("Connected!");
+          // animation();
+
+          Swal.fire({
+            position: "center",
+            title: "Connected!",
+            color: '#6FB95B',
+            backdrop: false,
+            showConfirmButton: false,
+            timer: 3500,
+            width: "25em",
+            customClass: 'swal-model'
+          });
         });
 
         // this event awakes if client couldn't reconnect to the server after trying few times
         connection.onclose((error) => {
-          status.removeClass(currAlertClass);
-          status.addClass("alert alert-danger");
-          currAlertClass = "alert alert-danger";
-          status.html("Connection failed.");
-          animation();
+          // status.removeClass(currAlertClass);
+          // status.addClass("alert alert-danger");
+          // currAlertClass = "alert alert-danger";
+          // status.html("Connection failed.");
+          // animation();
+
+          Swal.fire({
+            position: "center",
+            title: "Connection failed.",
+            color: '#D74627',
+            backdrop: false,
+            showConfirmButton: false,
+            timer: 3500,
+            width: "25em",
+            customClass: 'swal-model'
+          });
         });
 
         // server will notify the clients through this event when a user joined
@@ -260,22 +299,43 @@
 
         // server will notify the clients through this event when a user left
 
-        connection.on("userLeft", (connectionId) => {
-          status.removeClass(currAlertClass);
-          status.addClass("alert alert-danger");
-          currAlertClass = "alert alert-danger";
-          status.html(`${connectionId} left.`);
-          animation();
+        connection.on("userLeft", (leftUserName) => {
+          // status.removeClass(currAlertClass);
+          // status.addClass("alert alert-danger");
+          // currAlertClass = "alert alert-danger";
+          // status.html(`${leftUserName} left.`);
+          // animation();
+
+          Swal.fire({
+            position: "bottom-start",
+            title: leftUserName + " left.",
+            color: '#D74627',
+            backdrop: false,
+            showConfirmButton: false,
+            timer: 3500,
+            width: "25em",
+            customClass: 'swal-model'
+          });
         });
 
         connection.on("notifyUserJoined", (joinedUserName) => {
           // alert users that a user joined
-          status.removeClass(currAlertClass);
-          status.addClass("alert alert-success");
-          currAlertClass = "alert alert-success";
-          status.html(`${joinedUserName} joined.`);
-          animation();
+          // status.removeClass(currAlertClass);
+          // status.addClass("alert alert-success");
+          // currAlertClass = "alert alert-success";
+          // status.html(`${joinedUserName} joined.`);
+          // animation();
 
+          Swal.fire({
+            position: "bottom-start",
+            title: joinedUserName + " joined!",
+            color: '#6FB95B',
+            backdrop: false,
+            showConfirmButton: false,
+            timer: 3500,
+            width: "25em",
+            customClass: 'swal-model'
+          });
         });
 
         // write the online clients list to the screen
