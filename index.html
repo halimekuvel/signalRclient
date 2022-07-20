@@ -213,7 +213,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <div class="container overflowScroll-auto" id="showGroupMessagesCnt">
+            <div class="container overflowScroll-auto" id="showDirectMessagesCnt">
               <div id="showDMMessages"></div>
             </div>
             
@@ -449,25 +449,51 @@
           let message = $("#txtMessageGroup").val();
           $("#txtMessageDM").val("");
           $("#txtMessageDM").removeClass("is-invalid");
-        $("#txtMessageDM").keypress(function (e) {
-          if (e.which == 13) {
-            $("#btnSendDM").click();
-          }
-        });
-
-
-
-          
-
+          $("#txtMessageDM").keypress(function (e) {
+            if (e.which == 13) {
+              $("#btnSendDM").click();
+            }
+          });
+        
           // send message to user 
-          // connection
-          //   .invoke("SendMessageToUserAsync", message, currentGroupName)
-          //   .catch((error) =>
-          //     console.log(
-          //       `Error occured while sending a direct message. ${error}`
-          //     )
-          //   );
+          connection
+            .invoke("SendMessageToUserAsync", message, userName)
+            .catch((error) =>
+              console.log(
+                `Error occured while sending a direct message. ${error}`
+              )
+            );
         });
+
+        connection.on("receiveDirectMessage", (message, connectionId, userName) => {
+          floatType = "";
+          classType = "";
+          userNameText = "";
+          if (connectionId === connectionId_) {
+            floatType = "right";
+            classType = "warning";
+            userNameText = "";
+          } else {
+            floatType = "left";
+            classType = "light";
+            userNameText = "<strong>" + userName + " : </strong>";
+          }
+          let nameAndMsg =
+            '<span class="badge badge-' +
+            classType +
+            " float-" +
+            floatType +
+            '"> ' +
+            userNameText +
+            message +
+            "</div></span><br><br>";
+
+          $("#showDMMessages").append(nameAndMsg);
+          var scrollObj = document.getElementById("showDirectMessagesCnt");
+          scrollObj.scrollTop = scrollObj.scrollHeight;
+        })
+
+
 
         let connectionId_ = "";
         // send the client's message to the SendMessageAsync method in the server
