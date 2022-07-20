@@ -448,6 +448,13 @@
           currentUserDM = $(this).attr('id');
           $("#dmModalLabel").html("Chat with " + currentUserDM);
           $("#modalButtonDM").click();
+          connection
+            .invoke("GetPrevUserMsgs", currentUserDM)
+            .catch((error) =>
+              console.log(
+                `Error occured while sending a direct message. ${error}`
+              )
+            );
         });
 
         $("#btnSendDM").click(() => {
@@ -479,8 +486,33 @@
         connection.on("receiveDirectMessage", (message, connectionId, userName, senderUserName) => {
           if ((userName == currentUserDM || connectionId == connectionId_) && currentUserDM != ""){
             // print the message
-            floatType = "";
-            classType = "";
+            printDirectMessage(userName, message);
+          }
+          else {
+            // notification
+            Swal.fire({
+              position: "bottom-end",
+              title: "Message from " + senderUserName,
+              text: message,
+              backdrop: false,
+              showConfirmButton: true,
+              timer: 3500,
+              width: "20em",
+            });
+
+          }
+        });
+
+        connection.on("receivePrevUserMsgs", (messages, userName) => {
+          let messages_ = JSON.parse(userName, messages);
+          $.each(messages_, (index, item) => {
+            printDirectMessage(item);
+          });
+        });
+
+        function printDirectMessage(userName, message) {
+            let floatType = "";
+            let classType = "";
             if (userName == currentUserDM) {
               floatType = "right";
               classType = "warning";
@@ -499,21 +531,7 @@
             $("#showDirectMessages").append(nameAndMsg);
             var scrollObj = document.getElementById("showDirectMessagesCnt");
             scrollObj.scrollTop = scrollObj.scrollHeight;
-          }
-          else {
-            // notification
-            Swal.fire({
-              position: "bottom-end",
-              title: "Message from " + senderUserName,
-              text: message,
-              backdrop: false,
-              showConfirmButton: true,
-              timer: 3500,
-              width: "20em",
-            });
-
-          }
-        })
+        }        
 
 
 
@@ -625,8 +643,8 @@
 
         function printGroupMessage(response) {
           if (response.groupName == $("input[name=group]:checked").val()) {
-            floatType = "";
-            classType = "";
+            let floatType = "";
+            let classType = "";
             if (response.connectionId === connectionId_) {
               floatType = "right";
               classType = "warning";
