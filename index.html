@@ -449,6 +449,16 @@
           let message = $("#txtMessageGroup").val();
           $("#txtMessageDM").val("");
           $("#txtMessageDM").removeClass("is-invalid");
+        $("#txtMessageDM").keypress(function (e) {
+          if (e.which == 13) {
+            $("#btnSendDM").click();
+          }
+        });
+
+
+
+          
+
           // send message to user 
           // connection
           //   .invoke("SendMessageToUserAsync", message, currentGroupName)
