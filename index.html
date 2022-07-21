@@ -325,6 +325,19 @@
         start();
 
 
+
+        connection.on("timeOutNotification", () => {
+          console.log("BITTI");
+          $("#showAnnouncementModal .modal-body").html(
+            `<h5 style= "color: #D74627">Your time is out!</h5>`
+          );
+          $("#showAnnouncementModalLabel").html(
+            `<p class= "mt-1" >Message From Server</p>`
+
+          );
+          $("#showAnnouncementModal").modal("show");
+        });
+
         function animation() {
           status.fadeIn(2000, () => {
             setTimeout(() => {
