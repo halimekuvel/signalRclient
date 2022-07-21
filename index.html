@@ -449,7 +449,7 @@
           $("#dmModalLabel").html("Chat with " + currentUserDM);
           $("#modalButtonDM").click();
           connection
-            .invoke("GetPrevUserMsgs", currentUserDM)
+            .invoke("GetPrevUserMsgs", currentUserDM, connectionId_)
             .catch((error) =>
               console.log(
                 `Error occured while sending a direct message. ${error}`
@@ -486,7 +486,7 @@
         connection.on("receiveDirectMessage", (message, connectionId, userName, senderUserName) => {
           if ((userName == currentUserDM || connectionId == connectionId_) && currentUserDM != ""){
             // print the message
-            printDirectMessage(userName, message);
+            printDirectMessage(senderUserName, message);
           }
           else {
             // notification
@@ -503,34 +503,36 @@
           }
         });
 
-        connection.on("receivePrevUserMsgs", (messages, userName) => {
-          let messages_ = JSON.parse(userName, messages);
+        connection.on("receivePrevUserMsgs", (messages) => {
+          let messages_ = JSON.parse(messages);
           $.each(messages_, (index, item) => {
-            printDirectMessage(item);
+            printDirectMessage(item.senderUsername, item.directMessage);
           });
         });
 
         function printDirectMessage(userName, message) {
-            let floatType = "";
-            let classType = "";
-            if (userName == currentUserDM) {
-              floatType = "right";
-              classType = "warning";
-            } else {
-              floatType = "left";
-              classType = "light";
-            }
-            let nameAndMsg =
-              '<span class="badge badge-' +
-              classType +
-              " float-" +
-              floatType +
-              '">' +
-              message +
-              "</span><br><br>";
-            $("#showDirectMessages").append(nameAndMsg);
-            var scrollObj = document.getElementById("showDirectMessagesCnt");
-            scrollObj.scrollTop = scrollObj.scrollHeight;
+          console.log(userName + ": " + message);
+          console.log(currentUserDM);
+          let floatType = "";
+          let classType = "";
+          if (userName != currentUserDM) {
+            floatType = "right";
+            classType = "warning";
+          } else {
+            floatType = "left";
+            classType = "light";
+          }
+          let nameAndMsg =
+            '<span class="badge badge-' +
+            classType +
+            " float-" +
+            floatType +
+            '">' +
+            message +
+            "</span><br><br>";
+          $("#showDirectMessages").append(nameAndMsg);
+          var scrollObj = document.getElementById("showDirectMessagesCnt");
+          scrollObj.scrollTop = scrollObj.scrollHeight;
         }        
 
 
