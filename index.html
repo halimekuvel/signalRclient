@@ -48,7 +48,7 @@
       </svg>
        Announcement
     </button>
-    <div align = "center"><img src = "biletbank.jpg" /></div>
+    <br><br><br>
     <div class="container">
       <div class="row">
         <div class="col-md-4 border">
@@ -251,8 +251,6 @@
           </div>
           <div class="modal-body"> 
             <select class="js-example-basic-multiple select2-container" name="states[]" multiple="multiple" id="userList">
-              <option value="AL">Alabama</option>
-              <option value="WY">Wyoming</option>
             </select>
           </div>
           <div class="modal-footer">
@@ -567,12 +565,10 @@
           $("#txtMessage").removeClass("is-invalid");
 
           // send to group chosen with radio buttons
-          //
-          ("SendMessageAsync", message, $("input[name=group]:checked").val()).catch(error => console.log(`Error occured while sending a message. ${error}`));
+          //("SendMessageAsync", message, $("input[name=group]:checked").val()).catch(error => console.log(`Error occured while sending a message. ${error}`));
 
           // send to clients with specified connectionIds
-          //
-          ("SendMessageAsync", message, connectionIds).catch(error => console.log(`Error occured while sending a message. ${error}`));
+          //("SendMessageAsync", message, connectionIds).catch(error => console.log(`Error occured while sending a message. ${error}`));
 
           // send All, Caller, Others
           connection
@@ -1003,14 +999,17 @@
 
         connection.on("receiveUserList", (clients) => {
           let clients_ = JSON.parse(clients);
+          $("#userList").empty();
+          let users = "";
           $.each(clients_, (index, item) => {
-            
-            
+            if(item.ConnectionId != connectionId_) {
+              users += `<option value="` + item.ConnectionId + `">`+ item.Username +`</option>`      
+            }
           });
 
-
+          $("#userList").append(users);
         });
-
+             
         
 
       });
