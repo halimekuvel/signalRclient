@@ -556,10 +556,12 @@
           $("#txtMessage").removeClass("is-invalid");
 
           // send to group chosen with radio buttons
-          //connection.invoke("SendMessageAsync", message, $("input[name=group]:checked").val()).catch(error => console.log(`Error occured while sending a message. ${error}`));
+          //
+          ("SendMessageAsync", message, $("input[name=group]:checked").val()).catch(error => console.log(`Error occured while sending a message. ${error}`));
 
           // send to clients with specified connectionIds
-          //connection.invoke("SendMessageAsync", message, connectionIds).catch(error => console.log(`Error occured while sending a message. ${error}`));
+          //
+          ("SendMessageAsync", message, connectionIds).catch(error => console.log(`Error occured while sending a message. ${error}`));
 
           // send All, Caller, Others
           connection
@@ -978,7 +980,24 @@
         });
 
         $("#btnAnnouncement").click(() => {
+          connection
+            .invoke("RequestUserList")
+            .catch((error) =>
+              console.log(
+                `Error occured while requesting user list. ${error}`
+              )
+            );
+          
+        });
+
+        connection.on("receiveUserList", (clients) => {
+          let clients_ = JSON.parse(clients);
+          $.each(clients_, (index, item) => {
             
+            
+          });
+
+
         });
 
         
