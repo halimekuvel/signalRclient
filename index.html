@@ -274,8 +274,8 @@
     </button>
 
     <!-- Modal -->    
-    <div class="modal fade " id="showAnnouncementModal" tabindex="-1" role="dialog" aria-labelledby="showAnnouncementModalLabel" aria-hidden="true"  >
-      <div class="modal-dialog" role="document">
+    <div class="modal fade" id="showAnnouncementModal" tabindex="-1" role="dialog" aria-labelledby="showAnnouncementModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="showAnnouncementModalLabel"></h5>
@@ -1028,14 +1028,16 @@
           $.each(userList, (index, item) => {
             connectionIdList.push(item.value);
           });
-          console.log(connectionIdList);
-          connection
+          console.log(connectionIdList)
+          if(connectionIdList != null && message != "") {
+            connection
             .invoke("SendAnnouncement", message, connectionIdList)
             .catch((error) =>
               console.log(
                 `Error occured while sending announcement. ${error}`
               )
             );
+          }
         }
         );
         $("#txtAnnouncement").keypress(function (e) {
@@ -1044,13 +1046,11 @@
           }
         });
 
-
-
-
         connection.on("receiveUserList", (clients) => {
           let clients_ = JSON.parse(clients);
           $("#userList").empty();
           let users = "";
+
           $.each(clients_, (index, item) => {
             if(item.ConnectionId != connectionId_) {
               users += `<option value="` + item.ConnectionId + `">`+ item.Username +`</option>`      
@@ -1059,6 +1059,7 @@
 
           $("#userList").append(users);
         });
+
         connection.on("receiveAnnouncement", (message, senderUsername) => {
           $("#showAnnouncementModal .modal-body").html(
             `<h5>${message}</h5>`
