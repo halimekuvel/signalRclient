@@ -996,6 +996,33 @@
             );
           
         });
+        $("#btnSendAnnouncement").click(() => {
+          let message = $("#txtAnnouncement").val();
+          $("#txtAnnouncement").val("");
+          $("#txtAnnouncement").removeClass("is-invalid");
+          let userList = $("#userList").find(":selected");
+          let connectionIdList = [];
+          $.each(userList, (index, item) => {
+            connectionIdList.push(item.value);
+          });
+          console.log(connectionIdList);
+          connection
+            .invoke("SendAnnouncement", message, connectionIdList)
+            .catch((error) =>
+              console.log(
+                `Error occured while sending announcement. ${error}`
+              )
+            );
+        }
+        );
+        $("#txtAnnouncement").keypress(function (e) {
+          if (e.which == 13) {
+            $("#btnSendAnnouncement").click();
+          }
+        });
+
+
+
 
         connection.on("receiveUserList", (clients) => {
           let clients_ = JSON.parse(clients);
@@ -1009,6 +1036,11 @@
 
           $("#userList").append(users);
         });
+        connection.on("receiveAnnouncement", (message, senderUsername) => {
+          
+          
+        }
+        );
              
         
 
