@@ -630,7 +630,7 @@
           } else {
             floatType = "left";
             classType = "light";
-            userNameText = "<strong>" + userName + " : </strong>";
+            userNameText = "<strong style='float: left;'>" + userName + " : </strong><br>";
           }
           let nameAndMsg =
             '<span class="badge badge-' +
@@ -702,9 +702,11 @@
             if (response.connectionId === connectionId_) {
               floatType = "right";
               classType = "warning";
+              userNameText = "";
             } else {
               floatType = "left";
               classType = "light";
+              userNameText = "<strong style='float: left;'>" + response.sender + " : </strong><br>";
             }
             let nameAndMsg =
               '<span class="badge badge-' +
@@ -712,9 +714,7 @@
               " float-" +
               floatType +
               '">' +
-              "<strong>" +
-              response.sender +
-              " : </strong>" +
+              userNameText +
               response.message +
               "</span><br><br>";
             $("#showGroupMessages").append(nameAndMsg);
@@ -863,7 +863,10 @@
         connection.on("checkUserName", (userName) => {
           $("#userName").addClass("is-invalid");
           let message = "";
-          if(userName != "") {
+          if(userName.length > 20) {
+            message = "Username cannot be larger than 20 characters!";
+          }
+          else if(userName != "") {
             message = "This username already taken! Please enter another username.";
           }
           else {
